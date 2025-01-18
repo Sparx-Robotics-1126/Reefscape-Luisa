@@ -122,33 +122,33 @@ public class RobotContainer {
       
         /* REGISTER PATHPLANNER COMMANDS HERE */
      
-    Command test = m_swerve.driveCommand(
-                () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftY(), .1), -1,
-                        1),
-                () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftX(), .1), -1,
-                        1),
-                () -> -m_driver.getRightX());
+    // Command test = m_swerve.driveCommand(
+    //             () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftY(), .1), -1,
+    //                     1),
+    //             () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftX(), .1), -1,
+    //                     1),
+    //             () -> m_driver.getRightX());
 
         //OTHER COMMANDS
         //NamedCommands.registerCommand("limelightTarget", new LLRotationAlignCommand(m_swerve).withTimeout(1.5));
-        // DriverStation.silenceJoystickConnectionWarning(true);
+        //DriverStation.silenceJoystickConnectionWarning(true);
 
-        m_swerve.setDefaultCommand(test );
+        // m_swerve.setDefaultCommand(test);
         // m_swerve = new SwerveSubsystem(
                 // new File(Filesystem.getDeployDirectory(), "swerve"));
 
-        // Command driveFieldOrientedAnglularVelocity = m_swerve.driveCommand(
-        //         () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftY()*.75, .1), -1,
-        //                 1),
-        //         () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftX()*.75, .1), -1,
-        //                 1),
-        //         () -> m_driver.getRightX());
+        Command driveFieldOrientedAnglularVelocity = m_swerve.driveCommand(
+                () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftY()*.75, .1), -1,
+                        1),
+                () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftX()*.75, .1), -1,
+                        1),
+                () -> m_driver.getRightX());
 
-        // m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
        
         // configureChooser();
 
-        // configureDriverBindings();
+        configureDriverBindings();
 
     }
 
@@ -156,7 +156,7 @@ public class RobotContainer {
         
         
 
-        // m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+        m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         // m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
         // m_driver.x().onTrue(Commands.runOnce(m_swerve::addFakeVisionReading));
         // m_driver.b().whileTrue(
