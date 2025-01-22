@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.team1126.subsystems.CANdleSubsystem;
 
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
@@ -41,13 +40,7 @@ public class Robot extends TimedRobot {
     public void disabledPeriodic() {
         if (RobotBase.isReal())
         {
-            // if (DriverStation.getAlliance().get() == Alliance.Red) {
-            //     ledColor = 0;
-            //     m_candleSubsystem.setLEDState(CANdleSubsystem.LEDState.RED);
-            // } else {
-            //     ledColor = 1;
-            //     m_candleSubsystem.setLEDState(CANdleSubsystem.LEDState.BLU);
-            // }
+            
         }
     }
 
@@ -68,7 +61,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousPeriodic() {
-        // RobotContainer.m_storage.setHasNote();
+
     }
 
     @Override
@@ -79,30 +72,13 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         if (autonomousCommand != null)
             autonomousCommand.cancel();
-
-        // robotContainer.m_swerve.zeroGyro();
-        // robotContainer.m_storage.resetNote();
-        // RobotContainer.swerve.stopAllModules();
     }
 
     @Override
     public void teleopPeriodic() {
-        // robotContainer.setCANdle();
         robotContainer.EndGameRumble();
         robotContainer.upToSpeedRumble();
 
-        // if (ll.hasSpeakerTarget() && RobotContainer.m_storage.getHasNote()) {
-        // if (ll.calculateTargetDistanceInInches() > 40 &&
-        // ll.calculateTargetDistanceInInches() < 45) {
-        // m_candleSubsystem.setLEDState(CANdleSubsystem.LEDState.GREEN);// close angle
-        // } else if (ll.calculateTargetDistanceInInches() > 90 &&
-        // ll.calculateTargetDistanceInInches() < 96) {
-        // m_candleSubsystem.setLEDState(CANdleSubsystem.LEDState.GREEN);
-        // } else if (ll.calculateTargetDistanceInInches() > 110 &&
-        // ll.calculateTargetDistanceInInches() < 114) {
-        // m_candleSubsystem.setLEDState(CANdleSubsystem.LEDState.GREEN);
-        // }
-        // }
     }
 
     @Override

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -138,9 +139,9 @@ public class RobotContainer {
                 // new File(Filesystem.getDeployDirectory(), "swerve"));
 
         Command driveFieldOrientedAnglularVelocity = m_swerve.driveCommand(
-                () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftY()*.75, .1), -1,
+                () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftY()*.75, .1), -1,
                         1),
-                () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftX()*.75, .1), -1,
+                () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftX()*.75, .1), -1,
                         1),
                 () -> m_driver.getRightX());
 
@@ -204,21 +205,7 @@ public class RobotContainer {
     }
 
     public void configureChooser() {
-
         // autos using pathplanner
-        // m_chooser.setDefaultOption("Do Nothing", new WaitCommand(1));
-        // m_chooser.addOption("Leave Start Area", new PathPlannerAuto("LeaveStartingZone"));
-        // m_chooser.addOption("ShootAndMoveFromFront", new PathPlannerAuto("ShootMoveShoot"));
-
-        // m_chooser.addOption("shootfromAmpSide", new PathPlannerAuto("MoveFromAngleShoot"));
-        // m_chooser.addOption("shootFromSourceSide", new PathPlannerAuto("ShootFromRight"));
-        // m_chooser.addOption("3 NOTE AUTO", new PathPlannerAuto("3NoteAuto"));
-        // m_chooser.addOption("x tuning", new PathPlannerAuto("xTuningTest"));
-        // m_chooser.addOption("y tuning", new PathPlannerAuto("test"));
-        // m_chooser.addOption("angleTuning",new PathPlannerAuto("AngleTuning"));
-
-        // m_chooser.addOption("shootStage", new PathPlannerAuto("playoffs 1"));
-
 
     }
 
@@ -228,10 +215,6 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        // swerve.zeroGyro();
-        //
-        // // m_driveSubsystem.setHeading(180);
-        // Timer.delay(0.05);
         // // the command to be run in autonomous
 
         // return _chooser.getSelected();
@@ -243,22 +226,17 @@ public class RobotContainer {
  
 
     public void EndGameRumble() {
-
-        // if(DriverStation.getMatchTime() < 20 && DriverStation.getMatchTime() > 18) {
-        //     m_candleSubsystem.setLEDState(LEDState.PURPLE);
-        // }
-
-        // if (DriverStation.getMatchTime() < SwerveConstants.ENDGAME_SECONDS 
-        //         && DriverStation.getMatchTime() > SwerveConstants.STOP_RUMBLE_SECONDS) {
+        if (DriverStation.getMatchTime() < Constants.SwerveConstants.ENDGAME_SECONDS 
+                && DriverStation.getMatchTime() > Constants.SwerveConstants.STOP_RUMBLE_SECONDS) {
             
-        //     m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-        //     m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+            m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+            //m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
 
-        // } else {
-        //     m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-        //     m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+        } else {
+            m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+            //m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
 
-        // }
+        }
     }
 
     //method for operator to know whether or not the shooter is up to speed for any given distance
