@@ -143,7 +143,7 @@ public class RobotContainer {
                         1),
                 () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftX()*.75, .1), -1,
                         1),
-                () -> m_driver.getRightX());
+                () -> -m_driver.getRightX());
 
         m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
        
