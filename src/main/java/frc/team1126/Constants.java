@@ -198,38 +198,6 @@ public final class Constants {
             }
         };
     }
-
-    public static class CANdleConstants {
-        /* CANdle ID */
-        public static final int CANDLE_ID = 15;
-
-        /* Purple RGB */
-        public static final int PURPLE_R = 255;
-        public static final int PURPLE_G = 0;
-        public static final int PURPLE_B = 191;
-
-        /* Yellow RGB */
-        public static final int YELLOW_R = 255;
-        public static final int YELLOW_G = 130;
-        public static final int YELLOW_B = 0;
-
-        /* Red RGB */
-        public static final int RED_R = 255;
-        public static final int RED_G = 0;
-        public static final int RED_B = 0;
-
-        /* Green RGB */
-        public static final int GREEN_R = 0;
-        public static final int GREEN_G = 255;
-        public static final int GREEN_B = 0;
-
-        /* Blue RGB */
-        public static final int BLUE_R = 0;
-        public static final int BLUE_G = 0;
-        public static final int BLUE_B = 255;
-
-    }
-
     /* Field related constants */
     public static final class FieldConstants {
         // List of possible scoring locations as Pose2d objects
@@ -361,6 +329,27 @@ public final class Constants {
                 new Transform3d(
                         new Translation3d(0.0, Units.inchesToMeters(1.5), Units.inchesToMeters(39.0)),
                         new Rotation3d(0.0, 0.0, 0.0));
+    }
+
+    public static final class AlgaeConstants {
+        public static final int ALGAE_WHEELS_ID = 21;
+        public static final int ALGAE_ROTATION_ID = 22;
+
+    }
+
+    public static final class ArmConstants {
+        public static final int TURN_ONE_ID = 31;
+        public static final int TURN_TWO_ID = 32;
+        public static final int ELEVATOR_ID = 33;
+    }
+
+    public static final class ClimbConstants {
+        public static final int CLIMB_ID = 41;
+    }
+
+    public static final class CoralConstants {
+        public static final int CORAL_WHEELS_ID = 51;
+        public static final int CORAL_PIVOT_ID = 52;
     }
 
     /**
