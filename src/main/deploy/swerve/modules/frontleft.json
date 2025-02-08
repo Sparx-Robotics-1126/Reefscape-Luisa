@@ -5,7 +5,7 @@
   },
   "absoluteEncoderOffset": 110.947403125,
   "drive": {
-    "id": 25,
+    "id": 2,
     "type": "sparkmax_neo",
     "canbus": null
   },
