@@ -17,7 +17,8 @@ public class ArmSubsystem extends SubsystemBase {
     private SparkAbsoluteEncoder turnEncoder;
     private SparkAbsoluteEncoder extensionEncoder;
 
-    private PIDController pidController;
+    private PIDController turnPID;
+    private PIDController extensionPID;
 
     private SparkMaxConfig turn1Config;
     private SparkMaxConfig turn2Config;
@@ -45,7 +46,8 @@ public class ArmSubsystem extends SubsystemBase {
      * configure PID settings here.
      */
     private void configurePID(){
-        pidController = new PIDController(0, 0, 0);
+        turnPID = new PIDController(0, 0, 0);
+        extensionPID = new PIDController(0, 0, 0);
     }
 
     /**
@@ -71,7 +73,7 @@ public class ArmSubsystem extends SubsystemBase {
     
         if (currentPos < 90) {
             double error =  currentPos - targetPos;
-            double output = pidController.calculate(error);
+            double output = extensionPID.calculate(error);
             double feedforward = 0.1 * targetPos;
 
             extension.set(output + feedforward);
@@ -100,7 +102,7 @@ public class ArmSubsystem extends SubsystemBase {
     
         if (currentAngle < 90) {
             double error =  currentAngle - targetAngle;
-            double output = pidController.calculate(error);
+            double output = turnPID.calculate(error);
             double feedforward = 0.1 * targetAngle;
 
             turnMotor.set(output + feedforward);
