@@ -6,9 +6,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.CoralConstants;
 
-public class CoralAcquisition {
+public class CoralAcquisition extends SubsystemBase {
    
     private SparkFlex coralWheels;
     private SparkMax coralPivot;
@@ -23,8 +24,6 @@ public class CoralAcquisition {
         wheelConfig = new SparkFlexConfig();
         pivotConfig = new SparkMaxConfig();
 
-        //ADD PNEUMATICS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         configureSparkMaxes();
     }
 
@@ -36,15 +35,23 @@ public class CoralAcquisition {
         coralPivot.configure(pivotConfig, null, null);
     }
    
-    private void moveOut() {
-
+    public void moveOut() {
+        //method to move the entire coral acquisition out with the flex
     }
     
-    private void moveIn() {
-
+    public void moveIn() {
+        //method to move the entire coral acquisition out with the flex
     }
 
-    private void aquire() {
+    public void aquireCoral() {
+        coralWheels.set(1);
+    }
 
+    public void releaseCoral() {
+        coralWheels.set(-1);
+    }
+
+    public void toggleAcq() {
+        PneumaticSubsystem.acqSolenoid.toggle();
     }
 }

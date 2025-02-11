@@ -3,7 +3,9 @@ package frc.team1126.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-public class PlacerSubsystem {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class PlacerSubsystem extends SubsystemBase {
 
     private SparkMax placer;
     private SparkMaxConfig placerConfig;
@@ -21,20 +23,11 @@ public class PlacerSubsystem {
     private void configureSparkMaxes() {
         placer.configure(placerConfig, null, null);
     }
-
-    private void moveIn() {
-
+    public void grab() {
+        placer.set(1);
     }
 
-    private void moveOut() {
-
-    }
-
-    private void grab() {
-
-    }
-
-    private void release() {
-
+    public void release() {
+        placer.set(-1);
     }
 }

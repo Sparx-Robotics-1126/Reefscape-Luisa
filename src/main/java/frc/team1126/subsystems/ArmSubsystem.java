@@ -1,31 +1,51 @@
 package frc.team1126.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
 
-public class ArmSubsystem {
-    private SparkMax turn1;
-    private SparkMax turn2; // follows turn1
-    private SparkMax elevator;
+public class ArmSubsystem extends SubsystemBase {
+    private SparkMax turnMotor;
+    private SparkMax turnFollower; // follows turn1
+    private SparkMax extension;
+
+    private SparkAbsoluteEncoder turnEncoder;
+    private SparkAbsoluteEncoder extensionEncoder;
+
+    private PIDController pidController;
 
     private SparkMaxConfig turn1Config;
     private SparkMaxConfig turn2Config;
-    private SparkMaxConfig elevatorConfig;
+    private SparkMaxConfig extensionConfig;
 
 
     public ArmSubsystem() {
-        turn1 = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
-        turn2 = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
-        elevator = new SparkMax(ArmConstants.ELEVATOR_ID, MotorType.kBrushless);
+        turnMotor = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
+        turnFollower = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
+        extension = new SparkMax(ArmConstants.ELEVATOR_ID, MotorType.kBrushless);
+
+        turnEncoder = turnMotor.getAbsoluteEncoder();
+        extensionEncoder = extension.getAbsoluteEncoder();
 
         turn1Config = new SparkMaxConfig();
         turn2Config = new SparkMaxConfig();
-        elevatorConfig = new SparkMaxConfig();
+        extensionConfig = new SparkMaxConfig();
 
+        configurePID();
         configureSparkMaxes();
 
+    }
+
+    /*
+     * configure PID settings here.
+     */
+    private void configurePID(){
+        pidController = new PIDController(0, 0, 0);
     }
 
     /**
@@ -35,33 +55,63 @@ public class ArmSubsystem {
        
         turn2Config.follow(ArmConstants.TURN_ONE_ID);
 
-        turn2.configure(turn2Config, null, null);
-        turn1.configure(turn1Config, null, null);
-        elevator.configure(elevatorConfig, null, null);
+        turnFollower.configure(turn2Config, null, null);
+        turnMotor.configure(turn1Config, null, null);
+        extension.configure(extensionConfig, null, null);
     
     }
 
+    public void moveToExtension(double position) {
+        double targetPos = position;
+        double currentPos = getExtension();
 
-    public void moveToExtension() {
+        if(currentPos < 0){
+            currentPos = 0;
+        }
+    
+        if (currentPos < 90) {
+            double error =  currentPos - targetPos;
+            double output = pidController.calculate(error);
+            double feedforward = 0.1 * targetPos;
 
+            extension.set(output + feedforward);
+        }
     }
 
     public void extensionToHome() {
-
+        while(extensionEncoder.getPosition() > 0) {
+            extension.set(-0.5);
+        }
     }
    
     public void angleToHome() {
-
-    }
-   
-    public void armBrake() {
-
+        while(turnEncoder.getPosition() > 0) {
+            turnMotor.set(-0.5);
+        }
     }
 
-    public void moveToAngle() {
+    public void moveToAngle(double angle) {
+        double targetAngle = angle;
+        double currentAngle = getArmAngle();
 
+        if(currentAngle < 0){
+            currentAngle = 0;
+        }
+    
+        if (currentAngle < 90) {
+            double error =  currentAngle - targetAngle;
+            double output = pidController.calculate(error);
+            double feedforward = 0.1 * targetAngle;
+
+            turnMotor.set(output + feedforward);
+        }
     }
 
+    public double getArmAngle() {
+        return turnEncoder.getPosition();
+    }
 
-
+    public double getExtension() {
+        return extensionEncoder.getPosition();
+    }
 }

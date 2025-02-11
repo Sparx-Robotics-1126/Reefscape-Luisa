@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
+import frc.team1126.subsystems.AlgaeAcquisition;
 import frc.team1126.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -32,7 +33,7 @@ public class RobotContainer {
 
     private final int m_rotationAxis = XboxController.Axis.kRightX.value;
 
-    // public static final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
+    public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -158,6 +159,8 @@ public class RobotContainer {
         
 
         m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+        m_driver.x().whileTrue(new InstantCommand(() -> m_algae.moveArm(10)));
+        m_driver.y().whileTrue(new InstantCommand(() -> m_algae.spinAlgaeWheels()));
         // m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
         // m_driver.x().onTrue(Commands.runOnce(m_swerve::addFakeVisionReading));
         // m_driver.b().whileTrue(
