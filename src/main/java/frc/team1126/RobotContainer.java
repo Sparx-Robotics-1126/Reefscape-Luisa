@@ -6,39 +6,37 @@ package frc.team1126;
 
 import java.io.File;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
+import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
+import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.subsystems.AlgaeAcquisition;
+import frc.team1126.subsystems.ClimbSubsystem;
 import frc.team1126.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 public class RobotContainer {
 
-    private final int m_rotationAxis = XboxController.Axis.kRightX.value;
+    //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
 
     public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
+    public static final ClimbSubsystem m_climb = new ClimbSubsystem();
+
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
-    // CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
+    static CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
+    static CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
 
     public static SwerveSubsystem m_swerve = new SwerveSubsystem(
         new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -122,22 +120,7 @@ public class RobotContainer {
    
     public RobotContainer() {
       
-        /* REGISTER PATHPLANNER COMMANDS HERE */
-     
-    // Command test = m_swerve.driveCommand(
-    //             () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftY(), .1), -1,
-    //                     1),
-    //             () -> MathUtil.clamp(MathUtil.applyDeadband(m_driver.getLeftX(), .1), -1,
-    //                     1),
-    //             () -> m_driver.getRightX());
-
-        //OTHER COMMANDS
-        //NamedCommands.registerCommand("limelightTarget", new LLRotationAlignCommand(m_swerve).withTimeout(1.5));
-        //DriverStation.silenceJoystickConnectionWarning(true);
-
-        // m_swerve.setDefaultCommand(test);
-        // m_swerve = new SwerveSubsystem(
-                // new File(Filesystem.getDeployDirectory(), "swerve"));
+        configurePathPlanner();
 
         Command driveFieldOrientedAnglularVelocity = m_swerve.driveCommand(
                 () -> MathUtil.clamp(MathUtil.applyDeadband(-m_driver.getLeftY()*.75, .1), -1,
@@ -147,6 +130,11 @@ public class RobotContainer {
                 () -> -m_driver.getRightX());
 
         m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+
+        // human control for climb and algae
+        m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_climb));
+
+        m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
        
         // configureChooser();
 
@@ -156,8 +144,6 @@ public class RobotContainer {
 
     private void configureDriverBindings() {
         
-        
-
         m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
         m_driver.x().whileTrue(new InstantCommand(() -> m_algae.moveArm(10)));
         m_driver.y().whileTrue(new InstantCommand(() -> m_algae.spinAlgaeWheels()));
@@ -172,6 +158,10 @@ public class RobotContainer {
         //                       m_driver.back().whileTrue(Commands.none());
         //                       m_driver.leftBumper().whileTrue(Commands.runOnce(m_swerve::lock, m_swerve).repeatedly());
         //                       m_driver.rightBumper().onTrue(Commands.none());
+    }
+
+    public void configureOperatorBindings() {
+
     }
    
 
@@ -209,8 +199,15 @@ public class RobotContainer {
 
     public void configureChooser() {
         // autos using pathplanner
+        m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
 
     }
+    
+    /* REGISTER PATHPLANNER COMMANDS HERE */
+    public void configurePathPlanner() {
+        
+        NamedCommands.registerCommand("Wait", new WaitCommand(1));
+   }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -226,28 +223,5 @@ public class RobotContainer {
 
     }
 
- 
-
-    public void EndGameRumble() {
-        if (DriverStation.getMatchTime() < Constants.SwerveConstants.ENDGAME_SECONDS 
-                && DriverStation.getMatchTime() > Constants.SwerveConstants.STOP_RUMBLE_SECONDS) {
-            
-            m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-            //m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-
-        } else {
-            m_driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-            //m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-
-        }
-    }
-
-    //method for operator to know whether or not the shooter is up to speed for any given distance
-    public void upToSpeedRumble() {
-        // if(m_shooter.isMotorUpToSpeed()) {
-        //     m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble,1);
-        // } 
-        // m_operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble,0);
-    }
 
 }

@@ -16,7 +16,11 @@ public class ClimbMoveToPos extends Command {
 
     @Override
     public void execute() {
-        climb.moveClimbToPos(targetAngle);
+        if(climb.getAngle() > targetAngle) {
+            climb.moveClimbToPos(targetAngle);
+        } else if(climb.getAngle() < targetAngle) {
+            climb.moveClimbToPos(targetAngle);
+        }
     }
 
     @Override

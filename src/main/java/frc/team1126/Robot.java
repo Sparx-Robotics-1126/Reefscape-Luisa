@@ -4,16 +4,16 @@
 
 package frc.team1126;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.team1126.commands.EndGameRumble;
 
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
+    private EndGameRumble rumble = new EndGameRumble(RobotContainer.m_driver);
     public static RobotContainer robotContainer;
     public static int ledColor;
     // public static final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
@@ -76,9 +76,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopPeriodic() {
-        robotContainer.EndGameRumble();
-        robotContainer.upToSpeedRumble();
-
+        rumble.execute();
     }
 
     @Override

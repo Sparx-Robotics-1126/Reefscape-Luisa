@@ -9,9 +9,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.lib.Toolbox.AprilTag;
-
-import java.util.HashMap;
 import java.util.List;
 
 import com.pathplanner.lib.config.PIDConstants;
@@ -54,7 +51,6 @@ public final class Constants {
 
     public static final class Auton
     {
-
         public static final PIDFConfig X_AUTO_PID     = new PIDFConfig(0.7, 0, 0);
         public static final PIDFConfig Y_AUTO_PID     = new PIDFConfig(0.7, 0, 0);
         public static final PIDFConfig ANGLE_AUTO_PID = new PIDFConfig(0.4, 0, 0.01);
@@ -63,141 +59,6 @@ public final class Constants {
         public static final double MAX_ACCELERATION = 2;
     }
 
-    public static class AprilTags { //CHANGE THESE FOR THIS YEAR"S GAME!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        public static final int SOURCE_RIGHT_BLUE_ID = 1;
-        public static final int SOURCE_LEFT_BLUE_ID = 2;
-        public static final int SOURCE_RIGHT_RED_ID = 9;
-        public static final int SOURCE_LEFT_RED_ID = 10;
-        public static final int SPEAKER_1_RED_ID = 4;
-        public static final int SPEAKER_1_BLUE_ID = 7;
-        public static final int SPEAKER_2_RED_ID = 3;
-        public static final int SPEAKER_2_BLUE_ID = 8;
-        public static final int AMP_RED_ID = 5;
-        public static final int AMP_BLUE_ID = 6;
-        public static final int STAGE_1_RED_ID = 12;
-        public static final int STAGE_2_RED_ID = 11;
-        public static final int STAGE_3_RED_ID = 13;
-        public static final int STAGE_1_BLUE_ID = 15;
-        public static final int STAGE_2_BLUE_ID = 14;
-        public static final int STAGE_3_BLUE_ID = 16;
-        public AprilTag[] tags = new AprilTag[16];
-        public static final HashMap<Integer, AprilTag> TAG_MAP = new HashMap<Integer, AprilTag>() {
-            {
-                put(SOURCE_RIGHT_BLUE_ID, new AprilTag() {
-                    {
-                        id = SOURCE_RIGHT_BLUE_ID;
-                        name = "Source Right Blue";
-                        position = new Pose2d(new Translation2d(19.375, 48.125), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(SOURCE_LEFT_BLUE_ID, new AprilTag() {
-                    {
-                        id = SOURCE_LEFT_BLUE_ID;
-                        name = "Source Left Blue";
-                        position = new Pose2d(new Translation2d(-19.375, 48.125), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(SOURCE_RIGHT_RED_ID, new AprilTag() {
-                    {
-                        id = SOURCE_RIGHT_RED_ID;
-                        name = "Source Right Red";
-                        position = new Pose2d(new Translation2d(19.375, 48.125), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(SOURCE_LEFT_RED_ID, new AprilTag() {
-                    {
-                        id = SOURCE_LEFT_RED_ID;
-                        name = "Source Left Red";
-                        position = new Pose2d(new Translation2d(-19.375, 48.125), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(SPEAKER_1_RED_ID, new AprilTag() {
-                    {
-                        id = SPEAKER_1_RED_ID;
-                        name = "Speaker 1 Red";
-                        position = new Pose2d(new Translation2d(0,56.875), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(SPEAKER_1_BLUE_ID, new AprilTag() {
-                    {
-                        id = SPEAKER_1_BLUE_ID;
-                        name = "Speaker 1 Blue";
-                        position = new Pose2d(new Translation2d(0,56.875), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(SPEAKER_2_RED_ID, new AprilTag() {
-                    {
-                        id = SPEAKER_2_RED_ID;
-                        name = "Speaker 2 Red";
-                        position = new Pose2d(new Translation2d(17, 56.875), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(SPEAKER_2_BLUE_ID, new AprilTag() {
-                    {
-                        id = SPEAKER_2_BLUE_ID;
-                        name = "Speaker 2 Blue";
-                        position = new Pose2d(new Translation2d(17, 56.875), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(AMP_RED_ID, new AprilTag() {
-                    {
-                        id = AMP_RED_ID;
-                        name = "Amp Red";
-                        position = new Pose2d(new Translation2d(0, 48.125), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(AMP_BLUE_ID, new AprilTag() {
-                    {
-                        id = AMP_BLUE_ID;
-                        name = "Amp Blue";
-                        position = new Pose2d(new Translation2d(0, 48.125), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(STAGE_1_RED_ID, new AprilTag() {
-                    {
-                        id = STAGE_1_RED_ID;
-                        name = "Stage 1 Red";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(STAGE_2_RED_ID, new AprilTag() {
-                    {
-                        id = STAGE_2_RED_ID;
-                        name = "Stage 2 Red";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(STAGE_3_RED_ID, new AprilTag() {
-                    {
-                        id = STAGE_3_RED_ID;
-                        name = "Stage 3 Red";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromRadians(0.0));
-                    }
-                });
-                put(STAGE_1_BLUE_ID, new AprilTag() {
-                    {
-                        id = STAGE_1_BLUE_ID;
-                        name = "Stage 1 Blue";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(STAGE_2_BLUE_ID, new AprilTag() {
-                    {
-                        id = STAGE_2_BLUE_ID;
-                        name = "Stage 2 Blue";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-                put(STAGE_3_BLUE_ID, new AprilTag() {
-                    {
-                        id = STAGE_3_BLUE_ID;
-                        name = "Stage 3 Blue";
-                        position = new Pose2d(new Translation2d(0, 47.5), Rotation2d.fromDegrees(0.0));
-                    }
-                });
-            }
-        };
-    }
     /* Field related constants */
     public static final class FieldConstants {
         // List of possible scoring locations as Pose2d objects
@@ -334,13 +195,18 @@ public final class Constants {
     public static final class AlgaeConstants {
         public static final int ALGAE_WHEELS_ID = 21;
         public static final int ALGAE_ROTATION_ID = 22;
-
     }
 
     public static final class ArmConstants {
         public static final int TURN_ONE_ID = 31;
         public static final int TURN_TWO_ID = 32;
         public static final int ELEVATOR_ID = 33;
+    }
+
+    public static final class PlacerConstants {
+        public static final int PLACER_ID = 34;
+        public static final int PLACER_BOTTOM_ID = 11; // CHANGE THESE!!!!!
+        public static final int PLACER_TOP_ID = 12;
     }
 
     public static final class ClimbConstants {
@@ -350,6 +216,12 @@ public final class Constants {
     public static final class CoralConstants {
         public static final int CORAL_WHEELS_ID = 51;
         public static final int CORAL_PIVOT_ID = 52;
+    }
+
+    public static final class PneumaticsConstants {
+        public static final int MODULE_ID = 20;
+        public static final int ACQ_CHANNEL = 0; // CHANGE THESE TOO!!!!!!!!!
+        public static final int CLIMB_CHANNEL = 1; // <-----------
     }
 
     /**

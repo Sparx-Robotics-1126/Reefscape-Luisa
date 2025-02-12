@@ -10,8 +10,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
 
 public class ArmSubsystem extends SubsystemBase {
+    
     private SparkMax turnMotor;
-    private SparkMax turnFollower; // follows turn1
+    private SparkMax turnFollower; // follows turnMotor
     private SparkMax extension;
 
     private SparkAbsoluteEncoder turnEncoder;
@@ -26,6 +27,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public ArmSubsystem() {
+
         turnMotor = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
         turnFollower = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
         extension = new SparkMax(ArmConstants.ELEVATOR_ID, MotorType.kBrushless);
@@ -81,13 +83,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     public void extensionToHome() {
-        while(extensionEncoder.getPosition() > 0) {
+        if(extensionEncoder.getPosition() > 0) {
             extension.set(-0.5);
         }
     }
    
     public void angleToHome() {
-        while(turnEncoder.getPosition() > 0) {
+        if(turnEncoder.getPosition() > 0) {
             turnMotor.set(-0.5);
         }
     }

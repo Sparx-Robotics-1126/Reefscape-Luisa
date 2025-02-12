@@ -1,16 +1,16 @@
-package frc.robot.commands.pneumatics;
+package frc.team1126.commands.subsystems.pneumatics;
 
-import frc.robot.subsystems.Pneumatics;
+import frc.team1126.subsystems.PneumaticSubsystem;
 
-public class PowerCompressorCommand extends BasePneumaticsCommand {
-    public PowerCompressorCommand(Pneumatics subsystem) {
+public class IsCompressorEnabledCommand extends BasePneumaticsCommand {
+    public IsCompressorEnabledCommand(PneumaticSubsystem subsystem) {
         super(subsystem);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        subsystem.disableCompressor();
+        subsystem.updateDashboard();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -21,7 +21,6 @@ public class PowerCompressorCommand extends BasePneumaticsCommand {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        subsystem.enableCompressor();
     }
 
     // Returns true when the command should end.

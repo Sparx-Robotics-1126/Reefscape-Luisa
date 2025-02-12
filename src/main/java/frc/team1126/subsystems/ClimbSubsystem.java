@@ -59,6 +59,10 @@ public class ClimbSubsystem extends SubsystemBase {
         }
     }
 
+    public void moveClimb(double speed){
+        climb.set(speed);
+    }
+
     public void toggleClimb() {
         PneumaticSubsystem.climbSolenoid.toggle();
     }

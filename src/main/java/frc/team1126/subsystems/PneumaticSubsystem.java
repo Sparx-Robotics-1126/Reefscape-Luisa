@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import frc.team1126.commands.subsystems.pneumatics.FirePiston;
+import frc.team1126.Constants.PneumaticsConstants;
 
 public class PneumaticSubsystem extends SubsystemBase {
     protected Compressor compressor;
@@ -21,9 +22,9 @@ public class PneumaticSubsystem extends SubsystemBase {
      *                             the roboRio.
      */
     public PneumaticSubsystem() {
-        compressor = new Compressor(20, PneumaticsModuleType.REVPH);
-        acqSolenoid = new Solenoid(20, PneumaticsModuleType.REVPH, 0);
-        climbSolenoid = new Solenoid(20, PneumaticsModuleType.REVPH, 1);
+        compressor = new Compressor(PneumaticsConstants.MODULE_ID, PneumaticsModuleType.REVPH);
+        acqSolenoid = new Solenoid(PneumaticsConstants.MODULE_ID, PneumaticsModuleType.REVPH, PneumaticsConstants.ACQ_CHANNEL);
+        climbSolenoid = new Solenoid(PneumaticsConstants.MODULE_ID, PneumaticsModuleType.REVPH, PneumaticsConstants.CLIMB_CHANNEL);
         dashboardKey = "Compressor Pressure";
     }
 
