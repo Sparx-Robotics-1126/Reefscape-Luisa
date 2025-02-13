@@ -9,8 +9,11 @@ import java.io.File;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,8 +23,11 @@ import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
+import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
+import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
 import frc.team1126.subsystems.AlgaeAcquisition;
 import frc.team1126.subsystems.ClimbSubsystem;
+import frc.team1126.subsystems.CoralAcquisition;
 import frc.team1126.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -32,6 +38,8 @@ public class RobotContainer {
     public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
+
+    public static final CoralAcquisition m_coralAcq = new CoralAcquisition();
 
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -139,6 +147,7 @@ public class RobotContainer {
         // configureChooser();
 
         configureDriverBindings();
+        
 
     }
 
@@ -160,7 +169,12 @@ public class RobotContainer {
         //                       m_driver.rightBumper().onTrue(Commands.none());
     }
 
-    public void configureOperatorBindings() {
+    public void configureOperatorBindings() {   
+
+        m_operator.leftTrigger().whileTrue(new AcqMoveIn(m_coralAcq));
+        m_operator.rightTrigger().whileTrue(new AcqMoveOut(m_coralAcq));
+        m_operator.x().whileTrue(new AcqMoveIn(m_coralAcq));
+        m_operator.b().whileTrue(new AcqMoveOut(m_coralAcq));
 
     }
    
@@ -221,6 +235,11 @@ public class RobotContainer {
         return m_chooser.getSelected();
         // return swerve.getAutonomousCommand(_chooser.().getName(), true);
 
+    }
+
+    public static void getSmartDashboardTable() {
+        ShuffleboardTab tab = Shuffleboard.getTab("SmartDashboard");
+        GenericEntry test = tab.add("test variable", 1).getEntry();
     }
 
 
