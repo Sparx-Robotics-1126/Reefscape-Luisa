@@ -29,7 +29,7 @@ public final class Constants {
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
-
+  public static final double ROBOT_WIDTH_W_BUMBERS = .762;
   public static class OperatorConstants
   {
 
@@ -146,6 +146,57 @@ public final class Constants {
 
     }
 
+//from team 2638 https://github.com/rebels2638/2025-Reefscape-Robot
+public static final class AlignmentConstants {
+    // these assume the robots volume is zero. does not take into account frame
+   
+    public static final double kINTER_BRANCH_DIST_METER = 0.34;
+    public static final Pose2d[] kCENTER_FACES =
+        new Pose2d[6]; // Starting facing the driver station in clockwise order
+    static {
+      // Initialize faces
+      kCENTER_FACES[0] =
+        //bottom
+          new Pose2d(
+            3.642, 
+            4.024,
+            Rotation2d.fromDegrees(0));
+        //top right
+      kCENTER_FACES[1] =
+          new Pose2d(
+            4.916, 
+            3.285,
+            Rotation2d.fromDegrees(120));
+        //bottom right
+      kCENTER_FACES[2] =
+          new Pose2d(
+            4.064,
+            3.291,
+            Rotation2d.fromDegrees(60));
+        //top
+      kCENTER_FACES[3] =
+          new Pose2d(
+            5.344, 
+            4.023,
+            Rotation2d.fromDegrees(180));
+        //bottom left
+      kCENTER_FACES[4] =
+          new Pose2d(
+            4.064, 
+            4.763,
+            Rotation2d.fromDegrees(-60));
+        //top left
+      kCENTER_FACES[5] =
+          new Pose2d(
+            4.912, 
+            4.770,
+            Rotation2d.fromDegrees(-120));
+    }
+
+    public static final Translation2d CORAL_OFFSET_FROM_ROBOT_CENTER = new Translation2d(0,0);
+    
+    private AlignmentConstants() {}
+  }
 
     /**
      * Constants revolving around the vision subsystem.
@@ -223,7 +274,28 @@ public final class Constants {
         public static final int ACQ_CHANNEL = 0; // CHANGE THESE TOO!!!!!!!!!
         public static final int CLIMB_CHANNEL = 1; // <-----------
     }
-
+    public static final class CoralSubsystemConstants {
+    public static final class ElevatorSetpoints {
+        public static final int kFeederStation = 0;
+        public static final int kLevel1 = 0;
+        public static final int kLevel2 = 0;
+        public static final int kLevel3 = 100;
+        public static final int kLevel4 = 150;
+      }
+  
+      public static final class ArmSetpoints {
+        public static final double kFeederStation = 33;
+        public static final double kLevel1 = 0;
+        public static final double kLevel2 = 2;
+        public static final double kLevel3 = 2;
+        public static final double kLevel4 = 19;
+      }
+  
+      public static final class IntakeSetpoints {
+        public static final double kForward = 0.5;
+        public static final double kReverse = -0.5;
+      }
+    }
     /**
      * Constants revolving around auton modes.
      */

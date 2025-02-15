@@ -10,6 +10,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.FlippingUtil;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 // import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -18,12 +19,14 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 // import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 // import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,10 +34,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.team1126.Constants;
+import frc.team1126.Constants.AlignmentConstants;
+
 //import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 // import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -69,7 +77,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * PhotonVision class to keep an accurate odometry.
    */
-//  private       Vision              vision;
+ private       Vision              vision;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -103,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase
    swerveDrive.setAutoCenteringModules(true);
 if (visionDriveTest)
     {
-//      setupPhotonVision();
+    //  setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
@@ -128,10 +136,10 @@ if (visionDriveTest)
 //  /**
 //   * Setup the photon vision class.
 //   */
-//  public void setupPhotonVision()
-//  {
-//    vision = new Vision(swerveDrive::getPose, swerveDrive.field);
-//  }
+ public void setupPhotonVision()
+ {
+   vision = new Vision(swerveDrive::getPose, swerveDrive.field);
+ }
 
   @Override
   public void periodic()
@@ -140,6 +148,8 @@ if (visionDriveTest)
     if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
+      vision.updatePoseEstimation(swerveDrive);
+      vision.updateVisionField();
 //      vision.updatePoseEstimation(swerveDrive);
     }
   }
@@ -255,6 +265,86 @@ if (visionDriveTest)
     // Create a path following command using AutoBuilder. This will also trigger event markers.
     return new PathPlannerAuto(pathName);
   }
+
+
+public Pose2d getClosestLeftBranchPose() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    Pose2d current = swerveDrive.getPose();
+    List<Pose2d> candidates = new ArrayList<>();
+  
+    // System.out.println("Alliance " + alliance.get());
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[0], true));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[1], false));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[2], true));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[3], false));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[4], true));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[5], false));
+
+    Pose2d nearest = candidates.get(getClosestFace(current));
+    
+    nearest = alliance.isPresent() ? 
+      alliance.get() == DriverStation.Alliance.Blue ?
+        nearest : 
+        FlippingUtil.flipFieldPose(nearest)
+    : nearest;
+   System.out.println("RobotState/aligmentPoseSearch/nearest " + nearest);
+    // Logger.recordOutput("RobotState/aligmentPoseSearch/nearest", nearest);
+    return nearest;
+  }
+
+  public Pose2d getClosestRightBranchPose() {
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    Pose2d current = swerveDrive.getPose();
+    List<Pose2d> candidates = new ArrayList<>();
+
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[0], false));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[1], true));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[2], false));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[3], true));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[4], false));
+    candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[5], true));
+
+    Pose2d nearest = candidates.get(getClosestFace(current));
+
+    nearest = alliance.isPresent() ? 
+      alliance.get() == DriverStation.Alliance.Blue ?
+        nearest : 
+        FlippingUtil.flipFieldPose(nearest)
+    : nearest;
+
+    return nearest;
+  }
+
+   public Pose2d offsetBranchPose(Pose2d pose, boolean isLeftBranch) {
+      double bumperOffset = Constants.ROBOT_WIDTH_W_BUMBERS / 2;
+      double branchOffset = 
+        isLeftBranch ? 
+          AlignmentConstants.kINTER_BRANCH_DIST_METER / 2 : 
+          -AlignmentConstants.kINTER_BRANCH_DIST_METER / 2;
+
+      return pose.transformBy(
+        new Transform2d(
+          -bumperOffset + AlignmentConstants.CORAL_OFFSET_FROM_ROBOT_CENTER.getX(),
+          branchOffset + AlignmentConstants.CORAL_OFFSET_FROM_ROBOT_CENTER.getY() + branchOffset,
+          new Rotation2d(0)
+        )
+      );
+  }
+
+  public int getClosestFace(Pose2d curr) {
+    int nearest = 0;
+    for (int i = 0; i < AlignmentConstants.kCENTER_FACES.length; i++) {
+      if (AlignmentConstants.kCENTER_FACES[i].getTranslation().getDistance(curr.getTranslation()) < 
+          AlignmentConstants.kCENTER_FACES[nearest].getTranslation().getDistance(curr.getTranslation())
+      ) {
+        nearest = i;
+      }
+    }
+
+    return nearest;
+  }
+
+
 
   /**
    * Use PathPlanner Path finding to go to a point on the field.

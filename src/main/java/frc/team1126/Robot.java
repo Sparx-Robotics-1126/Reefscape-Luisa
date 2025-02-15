@@ -20,6 +20,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        enableLiveWindowInTest(true);
         robotContainer = new RobotContainer();
         // Autos.init();
     }
@@ -27,6 +28,7 @@ public class Robot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
+        // RobotContainer.getSmartDashboardTable();
         
 
         SmartDashboard.putData("AUTO CHOICES ", RobotContainer.m_chooser);

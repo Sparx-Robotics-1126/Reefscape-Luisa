@@ -1,11 +1,13 @@
 package frc.team1126.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.CoralConstants;
 
@@ -17,12 +19,20 @@ public class CoralAcquisition extends SubsystemBase {
     private SparkFlexConfig wheelConfig;
     private SparkMaxConfig pivotConfig;
 
+    private AbsoluteEncoder pivotEncoder;
+
+    private PIDController pivotController;
+
     public CoralAcquisition() {
         coralWheels = new SparkFlex(CoralConstants.CORAL_WHEELS_ID, MotorType.kBrushless);
         coralPivot = new SparkMax(CoralConstants.CORAL_PIVOT_ID, MotorType.kBrushless);
 
         wheelConfig = new SparkFlexConfig();
         pivotConfig = new SparkMaxConfig();
+
+        pivotEncoder = coralPivot.getAbsoluteEncoder();
+
+        pivotController = new PIDController(0, 0, 0);
 
         configureSparkMaxes();
     }
@@ -36,11 +46,25 @@ public class CoralAcquisition extends SubsystemBase {
     }
    
     public void moveOut() {
-        //method to move the entire coral acquisition out with the flex
+        double angle = 90.0;
+        if(getAngle() < angle) {
+            double error =  getAngle() - angle;
+            double output = pivotController.calculate(error);
+            double feedforward = 0.1 * angle;
+
+            coralPivot.set(output + feedforward);
+        }
     }
     
     public void moveIn() {
-        //method to move the entire coral acquisition out with the flex
+        double angle = -60.0;
+        if(getAngle() > angle) {
+            double error =  getAngle() - angle;
+            double output = pivotController.calculate(error);
+            double feedforward = 0.1 * angle;
+
+            coralPivot.set(-1 * (output + feedforward));
+        }
     }
 
     public void aquireCoral() {
@@ -53,5 +77,13 @@ public class CoralAcquisition extends SubsystemBase {
 
     public void toggleAcq() {
         PneumaticSubsystem.acqSolenoid.toggle();
+    }
+
+    public void moveAcq(double speed) {
+        coralPivot.set(speed);
+    }
+
+    public double getAngle() {
+        return pivotEncoder.getPosition();
     }
 }
