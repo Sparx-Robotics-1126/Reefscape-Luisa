@@ -1,8 +1,11 @@
 package frc.team1126.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -12,17 +15,17 @@ import frc.team1126.Constants.ClimbConstants;
 public class ClimbSubsystem extends SubsystemBase {
     private SparkMax climb;
 
-    private SparkAbsoluteEncoder climbEncoder;
+    private RelativeEncoder climbEncoder;
 
     private SparkMaxConfig climbConfig;
 
-    private PIDController pidController;
+    private SparkClosedLoopController pidController;
 
 
     public ClimbSubsystem() {
 
         climb = new SparkMax(ClimbConstants.CLIMB_ID, MotorType.kBrushless);
-        climbEncoder = climb.getAbsoluteEncoder();
+        climbEncoder = climb.getEncoder();
         climbConfig = new SparkMaxConfig();
 
         configurePID();
@@ -33,7 +36,7 @@ public class ClimbSubsystem extends SubsystemBase {
      * configure PID settings here.
      */
     private void configurePID(){
-        pidController = new PIDController(0, 0, 0);
+//        pidController = new PIDController(0, 0, 0);
     }
 
     /**
@@ -52,10 +55,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
         if (currentAngle > -160 || currentAngle < 90 ) { // these should be made constants at some point!!
             double error =  currentAngle - targetAngle;
-            double output = pidController.calculate(error);
+//            double output = pidController.calculate(error);
             double feedforward = 0.1 * targetAngle;
 
-            climb.set(output + feedforward);
+//            climb.set(output + feedforward);
         }
     }
 

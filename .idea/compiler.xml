@@ -10,6 +10,14 @@
         </processorPath>
         <module name="Vision.main" />
       </profile>
+      <profile name="Gradle Imported" enabled="true">
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$USER_HOME$/wpilib/2025/maven/edu/wpi/first/epilogue/epilogue-processor-java/2025.2.1/epilogue-processor-java-2025.2.1.jar" />
+          <entry name="$USER_HOME$/wpilib/2025/maven/edu/wpi/first/epilogue/epilogue-runtime-java/2025.2.1/epilogue-runtime-java-2025.2.1.jar" />
+        </processorPath>
+        <module name="Reefscape-Luisa.main" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="17" />
   </component>

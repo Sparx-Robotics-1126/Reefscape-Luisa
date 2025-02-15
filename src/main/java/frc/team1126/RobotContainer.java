@@ -33,11 +33,7 @@ import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
 import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
-import frc.team1126.subsystems.AlgaeAcquisition;
-import frc.team1126.subsystems.ArmSubsystem;
-import frc.team1126.subsystems.ClimbSubsystem;
-import frc.team1126.subsystems.CoralAcquisition;
-import frc.team1126.subsystems.SwerveSubsystem;
+import frc.team1126.subsystems.*;
 import swervelib.SwerveInputStream;
 import static edu.wpi.first.units.Units.Meter;
 
@@ -45,6 +41,7 @@ public class RobotContainer {
 
     //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
 public static final ArmSubsystem m_arm = new ArmSubsystem();
+    public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
@@ -262,9 +259,9 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         // m_operator.x().whileTrue(new AcqMoveIn(m_coralAcq));
         // m_operator.b().whileTrue(new AcqMoveOut(m_coralAcq));
 
-        m_operator.leftBumper().and(m_operator.a()).whileTrue(m_arm.setExtGoal(3));
-        m_operator.leftBumper().and(m_operator.x()).whileTrue(m_arm.setExtGoal(6));
-        m_operator.rightBumper().and(m_operator.a()).whileTrue(m_arm.setExtGoal(9));
+        m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
+        m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
+        m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
         m_operator.rightBumper().and(m_operator.x()).whileTrue(m_arm.setTurnGoal(45));
         m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
 
