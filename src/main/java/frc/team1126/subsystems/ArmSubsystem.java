@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,19 +24,25 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 public class ArmSubsystem extends SubsystemBase {
     private static final double MAX_ANGLE = 90.0;
     private static final double HOME_SPEED = -0.5;
     private static final double ARM_FEEDFORWARD_COEFFICIENT = 0.1;
-      /** Subsystem-wide setpoints */
-  public enum Setpoint {
-    kFeederStation,
-    kLevel1,
-    kLevel2,
-    kLevel3,
-    kLevel4;
-  }
 
+    /**
+     * Subsystem-wide setpoints
+     */
+    public enum Setpoint {
+        kFeederStation,
+        kLevel1,
+        kLevel2,
+        kLevel3,
+        kLevel4;
+    }
+
+    private final MutAngle mutAngle = Rotations.mutable(0);
     private SparkMax turnMotor;
     private SparkMax turnFollower; // follows turnMotor
     private SparkClosedLoopController turnController;
@@ -48,14 +55,14 @@ public class ArmSubsystem extends SubsystemBase {
     private SparkMaxConfig turnConfig;
     private SparkMaxConfig turn2Config;
 
-     protected ShuffleboardTab armTab;
+    protected ShuffleboardTab armTab;
 
-     private GenericEntry kTurnPEntry;
-     private GenericEntry kTurnIEntry;
-     private GenericEntry kTurnDEntry;
-     
-     private double kP,kI,kD =0;
-     private double angle = 0;
+    private GenericEntry kTurnPEntry;
+    private GenericEntry kTurnIEntry;
+    private GenericEntry kTurnDEntry;
+
+    private double kP, kI, kD = 0;
+    private double angle = 0;
 
 //     ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.1, 0.1);
 
@@ -67,7 +74,7 @@ public class ArmSubsystem extends SubsystemBase {
         turnEncoder = turnMotor.getEncoder();
 
         turnConfig = new SparkMaxConfig();
-       
+
 
         turn2Config = new SparkMaxConfig();
         armTab = Shuffleboard.getTab("ArmTab");
@@ -75,9 +82,8 @@ public class ArmSubsystem extends SubsystemBase {
         initShuffleboard();
         configurePID();
         configureSparkMaxes();
-      
-        
-       
+
+
     }
 
     /*
@@ -95,6 +101,7 @@ public class ArmSubsystem extends SubsystemBase {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     }
+
     /**
      * Add any extra SparkMax setting here.
      */
@@ -111,7 +118,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     }
 
-    private void initShuffleboard(){
+    private void initShuffleboard() {
         armTab = Shuffleboard.getTab("ArmTab");
         kTurnPEntry = armTab.add("Turn P", 0).getEntry();
         kTurnIEntry = armTab.add("Turn I", 0).getEntry();
@@ -123,7 +130,7 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     public void angleToHome() {
-        if(turnEncoder.getPosition() > 0) {
+        if (turnEncoder.getPosition() > 0) {
             turnMotor.set(HOME_SPEED);
         }
     }
@@ -161,45 +168,45 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
+    public void turnReachGoal(double goalDegree) {
+        turnController.setReference(Units.degreesToRotations(goalDegree), ControlType.kPosition);
+    }
 
-   public void turnReachGoal(double goalDegree){
-        turnController.setReference(Units.degreesToRotations(goalDegree),ControlType.kPosition);
-   }
-
-    public Command setTurnGoal(double degree){
+    public Command setTurnGoal(double degree) {
         System.out.println("Setting turn goal to " + degree);
         return run(() -> turnReachGoal(degree));
-  }
+    }
 
 
+    public void stopTurn() {
+        turnMotor.set(0.0);
+    }
 
+    @Override
+    public void periodic() {
 
-public void stopTurn() {
-    turnMotor.set(0.0);
-  }
+        // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
+        var p = kTurnPEntry.getDouble(0);
+        var i = kTurnIEntry.getDouble(0);
+        var d = kTurnDEntry.getDouble(0);
+        var ddd = turnMotor.getAbsoluteEncoder();
+        ddd.getPosition();
 
-@Override
-public void periodic() {
+        armTab.add("Current Position", turnEncoder.getPosition());
+        if (p != kP || i != kI || d != kD) {
 
-    // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
-var p = kTurnPEntry.getDouble(0);
-var i = kTurnIEntry.getDouble(0);
-var d = kTurnDEntry.getDouble(0);
-armTab.add("Current Angle", turnEncoder.getPosition());
-if (p != kP || i !=kI || d != kD) {
+            turnConfig.closedLoop
+                    .p(p)
+                    .i(i)
+                    .d(d)
+                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-    turnConfig.closedLoop
-    .p(p)
-    .i(i)
-    .d(d)
-    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+            turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+            kP = p;
+            kI = i;
+            kD = d;
+        }
 
-    turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-    kP = p;
-    kI = i;
-    kD = d;
-}
- 
-}
+    }
 
 }
