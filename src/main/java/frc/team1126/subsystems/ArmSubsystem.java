@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
+
+import static edu.wpi.first.units.Units.Rotations;
 
 public class ArmSubsystem extends SubsystemBase {
     private static final double MAX_ANGLE = 90.0;
@@ -36,6 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
     kLevel4;
   }
 
+  private final MutAngle mutAngle = Rotations.mutable(0);
     private SparkMax turnMotor;
     private SparkMax turnFollower; // follows turnMotor
     private SparkClosedLoopController turnController;
@@ -185,7 +189,10 @@ public void periodic() {
 var p = kTurnPEntry.getDouble(0);
 var i = kTurnIEntry.getDouble(0);
 var d = kTurnDEntry.getDouble(0);
-armTab.add("Current Angle", turnEncoder.getPosition());
+var ddd = turnMotor.getAbsoluteEncoder();
+ddd.getPosition();
+
+armTab.add("Current Position", turnEncoder.getPosition());
 if (p != kP || i !=kI || d != kD) {
 
     turnConfig.closedLoop
