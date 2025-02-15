@@ -20,6 +20,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        enableLiveWindowInTest(true);
         robotContainer = new RobotContainer();
         // Autos.init();
     }

@@ -68,12 +68,12 @@ public class ExtensionSubsystem extends SubsystemBase {
         extensionEncoder = extension.getEncoder();
 
         extensionConfig = new SparkMaxConfig();
-
+        armTab = Shuffleboard.getTab("ArmTab");
 
         initShuffleboard();
         configurePID();
         configureSparkMaxes();
-        armTab = Shuffleboard.getTab("ArmTab");
+    
 
     }
 

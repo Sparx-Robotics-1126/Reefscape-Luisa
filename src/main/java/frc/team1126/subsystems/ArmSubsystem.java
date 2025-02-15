@@ -17,7 +17,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
 
@@ -40,14 +42,11 @@ public class ArmSubsystem extends SubsystemBase {
 
 
     private RelativeEncoder turnEncoder;
-    private RelativeEncoder extensionEncoder;
 
     private PIDController turnPID;
-    private PIDController extensionPID;
 
     private SparkMaxConfig turnConfig;
     private SparkMaxConfig turn2Config;
-    private SparkMaxConfig extensionConfig;
 
      protected ShuffleboardTab armTab;
 
@@ -55,6 +54,8 @@ public class ArmSubsystem extends SubsystemBase {
      private GenericEntry kTurnIEntry;
      private GenericEntry kTurnDEntry;
      
+     private double kP,kI,kD =0;
+     private double angle = 0;
 
 //     ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.1, 0.1);
 
@@ -68,14 +69,14 @@ public class ArmSubsystem extends SubsystemBase {
         turnConfig = new SparkMaxConfig();
        
 
-        // turn2Config = new SparkMaxConfig();
-        extensionConfig = new SparkMaxConfig();
-       
+        turn2Config = new SparkMaxConfig();
+        armTab = Shuffleboard.getTab("ArmTab");
 
         initShuffleboard();
         configurePID();
         configureSparkMaxes();
-        armTab = Shuffleboard.getTab("ArmTab");
+      
+        
        
     }
 
@@ -111,10 +112,13 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void initShuffleboard(){
+        armTab = Shuffleboard.getTab("ArmTab");
         kTurnPEntry = armTab.add("Turn P", 0).getEntry();
         kTurnIEntry = armTab.add("Turn I", 0).getEntry();
         kTurnDEntry = armTab.add("Turn D", 0).getEntry();
-
+        angle = armTab.add("Angle", 0).getEntry().getDouble(0);
+        // armTab.add("Turn Command", setTurnGoal(angle));
+//   SmartDashboard.putData("Turn Command", new InstantCommand(() -> setTurnGoal(angle)));
     }
 
 
@@ -163,6 +167,7 @@ public class ArmSubsystem extends SubsystemBase {
    }
 
     public Command setTurnGoal(double degree){
+        System.out.println("Setting turn goal to " + degree);
         return run(() -> turnReachGoal(degree));
   }
 
@@ -172,5 +177,29 @@ public class ArmSubsystem extends SubsystemBase {
 public void stopTurn() {
     turnMotor.set(0.0);
   }
+
+@Override
+public void periodic() {
+
+    // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
+var p = kTurnPEntry.getDouble(0);
+var i = kTurnIEntry.getDouble(0);
+var d = kTurnDEntry.getDouble(0);
+armTab.add("Current Angle", turnEncoder.getPosition());
+if (p != kP || i !=kI || d != kD) {
+
+    turnConfig.closedLoop
+    .p(p)
+    .i(i)
+    .d(d)
+    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+    turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+    kP = p;
+    kI = i;
+    kD = d;
+}
+ 
+}
 
 }

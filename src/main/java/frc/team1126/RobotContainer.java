@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,6 +31,7 @@ import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
 import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
+import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
 import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
@@ -186,7 +188,7 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         // configureChooser();
 
         configureDriverBindings();
-        
+        DriverStation.silenceJoystickConnectionWarning(true);
 
     }
 
@@ -262,8 +264,8 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
         m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
         m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
-        m_operator.rightBumper().and(m_operator.x()).whileTrue(m_arm.setTurnGoal(45));
-        m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
+        m_operator.rightBumper().and(m_operator.x()).whileTrue(new MoveArmToAngle(m_arm,0));
+        m_driver.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
 
     }
    
