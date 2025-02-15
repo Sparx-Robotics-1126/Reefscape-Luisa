@@ -32,6 +32,9 @@ public class PlacerSubsystem extends SubsystemBase {
         placer.configure(placerConfig, null, null);
     }
 
+    /**
+     * Moves the coral to the correct position to place
+     */
     public void grab() {
         if (!bottomHasCoral()) { // if the coral isnt in the placer yet
             placer.set(1);
@@ -44,14 +47,25 @@ public class PlacerSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Releases the coral
+     */
     public void release() {
         placer.set(-1);
     }
 
+    /**
+     * Returns if the top sensor sees the coral
+     * @return true if the top sensor sees the coral, false otherwise
+     */
     public boolean topHasCoral() {
         return topSensor.get();
     }
 
+    /**
+     * Returns if the bottom sensor sees the coral
+     * @return true if the bottom sensor sees the coral, false otherwise
+     */
     public boolean bottomHasCoral() {
         return bottomSensor.get();
     }

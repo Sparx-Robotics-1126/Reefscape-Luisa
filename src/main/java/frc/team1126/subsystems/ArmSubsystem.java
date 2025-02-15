@@ -39,7 +39,7 @@ public class ArmSubsystem extends SubsystemBase {
         kLevel4;
     }
 
-    private final MutAngle mutAngle = Rotations.mutable(0);
+    // private final MutAngle mutAngle = Rotations.mutable(0);
     private SparkMax turnMotor;
     private SparkMax turnFollower; // follows turnMotor
     private SparkClosedLoopController turnController;
@@ -116,7 +116,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void initShuffleboard() {
-        armTab = Shuffleboard.getTab("ArmTab");
+        // armTab = Shuffleboard.getTab("ArmTab");
         kTurnPEntry = armTab.add("Turn P", 0).getEntry();
         kTurnIEntry = armTab.add("Turn I", 0).getEntry();
         kTurnDEntry = armTab.add("Turn D", 0).getEntry();
@@ -159,12 +159,13 @@ public class ArmSubsystem extends SubsystemBase {
 //            turnMotor.set(output + feedforward);
 //        }
     }
-
+    /**
+     * Returns the position of the arm
+     */
     public double getArmAngle() {
         return turnEncoder.getPosition();
     }
-
-
+    
     public void turnReachGoal(double goalDegree) {
         turnController.setReference(Units.degreesToRotations(goalDegree), ControlType.kPosition);
     }
@@ -174,7 +175,9 @@ public class ArmSubsystem extends SubsystemBase {
         return run(() -> turnReachGoal(degree));
     }
 
-
+    /**
+     * Sets arm speed to 0
+     */
     public void stopTurn() {
         turnMotor.set(0.0);
     }

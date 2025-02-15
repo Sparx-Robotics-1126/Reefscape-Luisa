@@ -264,8 +264,9 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
         m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
         m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
+        
         m_operator.rightBumper().and(m_operator.x()).whileTrue(new MoveArmToAngle(m_arm,0));
-        m_driver.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
+        m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
 
     }
    

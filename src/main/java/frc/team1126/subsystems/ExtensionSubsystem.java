@@ -53,6 +53,10 @@ public class ExtensionSubsystem extends SubsystemBase {
     private double kElevatorkV =.762 ;
     private double kElevatorkA = 0.0;
 
+    private double kP, kI, kD = 0;
+    private double angle;
+
+
     ElevatorFeedforward m_feedforward =
             new ElevatorFeedforward(
                     kElevatorkS,
@@ -108,8 +112,14 @@ public class ExtensionSubsystem extends SubsystemBase {
         kExtPEntry = armTab.add("Ext P", 0).getEntry();
         kExtIEntry = armTab.add("Ext I", 0).getEntry();
         kExtDEntry = armTab.add("Ext D", 0).getEntry();
+
+        angle = armTab.add("Angle", 0).getEntry().getDouble(0);
     }
 
+    /**
+     * Moves the extension to a specific position
+     * @param position the position to move the extension to
+     */
     public void moveExtensionToPosition(double position) {
 
         double currentPos = Math.max(getExtension(), 0);
@@ -121,12 +131,18 @@ public class ExtensionSubsystem extends SubsystemBase {
         }
     }
 
+    /**
+     * Moves the extension to home
+     */
     public void extensionToHome() {
         if(extensionEncoder.getPosition() > 0) {
             extension.set(-0.5);
         }
     }
 
+    /**
+     * Returns the current position of the extension 
+     */
     public double getExtension() {
         return extensionEncoder.getPosition();
     }
@@ -139,8 +155,34 @@ public class ExtensionSubsystem extends SubsystemBase {
         return run(() -> extReachGoal(distance));
     }
 
-
+    /**
+     * Sets the speed of the extension to 0
+     */
     public void stopExtension() {
         extension.set(0.0);
+    }
+
+    @Override
+    public void periodic() {
+        var p = kExtPEntry.getDouble(0);
+        var i = kExtIEntry.getDouble(0);
+        var d = kExtDEntry.getDouble(0);
+        var ddd = extension.getAbsoluteEncoder();
+        ddd.getPosition();
+
+        armTab.add("Current Position", extensionEncoder.getPosition());
+        if (p != kP || i != kI || d != kD) {
+
+            extensionConfig.closedLoop
+                    .p(p)
+                    .i(i)
+                    .d(d)
+                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+            extension.configure(extensionConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+            kP = p;
+            kI = i;
+            kD = d;
+        }
     }
 }
