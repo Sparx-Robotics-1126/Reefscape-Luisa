@@ -1,4 +1,6 @@
 {
+<<<<<<< HEAD
+=======
   "HALProvider": {
     "Other Devices": {
       "SPARK MAX [31]": {
@@ -8,6 +10,7 @@
       }
     }
   },
+>>>>>>> dbc3ec234ff1940c34dffebb55777b9d8bf46a9a
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
@@ -19,6 +22,18 @@
       "/SmartDashboard/JSON": "Alerts",
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/Pigeon 2 (v6) [14]": "Gyro",
+<<<<<<< HEAD
+      "/SmartDashboard/Swerve Drive": "Alerts"
+    },
+    "windows": {
+      "/SmartDashboard/Field": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+=======
       "/SmartDashboard/Swerve Drive": "Alerts",
       "/SmartDashboard/Turn Command": "Command"
     },
@@ -40,6 +55,7 @@
         }
       },
       "/SmartDashboard/Turn Command": {
+>>>>>>> dbc3ec234ff1940c34dffebb55777b9d8bf46a9a
         "window": {
           "visible": true
         }
