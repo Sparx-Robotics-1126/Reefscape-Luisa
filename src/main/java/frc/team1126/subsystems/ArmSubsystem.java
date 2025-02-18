@@ -15,6 +15,8 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,6 +46,8 @@ public class ArmSubsystem extends SubsystemBase {
     private SparkMax turnFollower; // follows turnMotor
     private SparkClosedLoopController turnController;
 
+    private DigitalInput homeSensor;
+
 
     private RelativeEncoder turnEncoder;
 
@@ -64,6 +68,8 @@ public class ArmSubsystem extends SubsystemBase {
 //     ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.1, 0.1);
 
     public ArmSubsystem() {
+          if (!RobotBase.isSimulation()){
+
         turnMotor = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
         turnFollower = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
         turnController = turnMotor.getClosedLoopController();
@@ -72,6 +78,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         turnConfig = new SparkMaxConfig();
 
+        homeSensor = new DigitalInput(ArmConstants.ARM_SENSOR_ID);
 
         turn2Config = new SparkMaxConfig();
         armTab = Shuffleboard.getTab("ArmTab");
@@ -80,7 +87,7 @@ public class ArmSubsystem extends SubsystemBase {
         configurePID();
         configureSparkMaxes();
 
-
+          }
     }
 
     /*
@@ -116,6 +123,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void initShuffleboard() {
+        
         // armTab = Shuffleboard.getTab("ArmTab");
         kTurnPEntry = armTab.add("Turn P", 0).getEntry();
         kTurnIEntry = armTab.add("Turn I", 0).getEntry();
@@ -163,7 +171,7 @@ public class ArmSubsystem extends SubsystemBase {
      * Returns the position of the arm
      */
     public double getArmAngle() {
-        return turnEncoder.getPosition();
+        return turnEncoder.getPosition() * (180 / Math.PI) ;
     }
     
     public void turnReachGoal(double goalDegree) {
@@ -182,8 +190,13 @@ public class ArmSubsystem extends SubsystemBase {
         turnMotor.set(0.0);
     }
 
+    public boolean isHome(){
+        return !homeSensor.get();
+    }
+
     @Override
     public void periodic() {
+        if (!RobotBase.isSimulation()){
 
         // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
         var p = kTurnPEntry.getDouble(0);
@@ -206,7 +219,7 @@ public class ArmSubsystem extends SubsystemBase {
             kI = i;
             kD = d;
         }
-
+    }
     }
 
 }

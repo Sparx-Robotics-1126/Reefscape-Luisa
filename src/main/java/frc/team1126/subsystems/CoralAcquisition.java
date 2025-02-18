@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.CoralConstants;
 
@@ -24,6 +25,8 @@ public class CoralAcquisition extends SubsystemBase {
     private PIDController pivotController;
 
     public CoralAcquisition() {
+          if (!RobotBase.isSimulation()){
+
         coralWheels = new SparkFlex(CoralConstants.CORAL_WHEELS_ID, MotorType.kBrushless);
         coralPivot = new SparkMax(CoralConstants.CORAL_PIVOT_ID, MotorType.kBrushless);
 
@@ -35,6 +38,7 @@ public class CoralAcquisition extends SubsystemBase {
         pivotController = new PIDController(0, 0, 0);
 
         configureSparkMaxes();
+          }
     }
 
     /**

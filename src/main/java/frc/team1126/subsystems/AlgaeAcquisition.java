@@ -8,6 +8,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,6 +36,9 @@ public class AlgaeAcquisition extends SubsystemBase {
     private SparkClosedLoopController rotationController;
     private PIDController pidController;
 
+    private DigitalInput homeSensor;
+    private DigitalInput algaeSensor;
+
     private double kRotationkS= 0.0;
     private double kRotationkG = .762;
     private double kRotationkV =.762 ;
@@ -59,9 +64,13 @@ public class AlgaeAcquisition extends SubsystemBase {
 
     //Creates a new AlgaeAcquisition.
     public AlgaeAcquisition() {
-         
+        if (!RobotBase.isSimulation()){
+
         algaeWheels = new SparkMax(AlgaeConstants.ALGAE_WHEELS_ID, MotorType.kBrushless);
          algaeRotation = new SparkMax(AlgaeConstants.ALGAE_ROTATION_ID, MotorType.kBrushless);
+
+         homeSensor = new DigitalInput(AlgaeConstants.ALGAE_HOME_ID);
+         algaeSensor = new DigitalInput(AlgaeConstants.ALGAE_SENSOR_ID);
 
          rotationEncoder = algaeRotation.getAbsoluteEncoder();
 
@@ -74,6 +83,8 @@ public class AlgaeAcquisition extends SubsystemBase {
 
         configurePID();
         configureSparkMaxes();
+        }
+
         }
 
     /**
@@ -143,16 +154,27 @@ public class AlgaeAcquisition extends SubsystemBase {
             algaeRotation.set(output + feedforward);
         }
     }
+    
     /**
      * Returns the position of algae acq
      */
     public double getAngle() {
-        return rotationEncoder.getPosition();
+        return rotationEncoder.getPosition() * (180 / Math.PI);
+    }
+
+    public boolean isAlgaeHome(){
+        return !homeSensor.get();
+    }
+
+    public boolean hasAlgae(){
+        return algaeSensor.get();
     }
 
 
         @Override
     public void periodic() {
+        if (!RobotBase.isSimulation()){
+
         var p = kRotationPEntry.getDouble(0);
         var i = kRotationIEntry.getDouble(0);
         var d = kRotationDEntry.getDouble(0);
@@ -173,5 +195,6 @@ public class AlgaeAcquisition extends SubsystemBase {
             kI = i;
             kD = d;
         }
+    }
     }
 }

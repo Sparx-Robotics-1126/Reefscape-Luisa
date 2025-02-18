@@ -30,11 +30,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
-import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
+// import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
-import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
-import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
+// import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
+// import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
 import frc.team1126.subsystems.*;
 import swervelib.SwerveInputStream;
 import static edu.wpi.first.units.Units.Meter;
@@ -43,12 +43,12 @@ public class RobotContainer {
 
     //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
 public static final ArmSubsystem m_arm = new ArmSubsystem();
-    public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
-    public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
+    // public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
+    // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
 
-    public static final CoralAcquisition m_coralAcq = new CoralAcquisition();
+    // public static final CoralAcquisition m_coralAcq = new CoralAcquisition();
 
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
 
@@ -181,9 +181,10 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         // m_swerve.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
         // human control for climb and algae
+
         m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_climb));
 
-        m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
+        // m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
        
         // configureChooser();
 
@@ -255,19 +256,19 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
     }
 
     public void configureOperatorBindings() {   
+        if (!RobotBase.isSimulation()){
 
-        m_operator.leftTrigger().whileTrue(new AcqMoveIn(m_coralAcq));
-        m_operator.rightTrigger().whileTrue(new AcqMoveOut(m_coralAcq));
+        // m_operator.leftTrigger().whileTrue(new AcqMoveIn(m_coralAcq));
+        // m_operator.rightTrigger().whileTrue(new AcqMoveOut(m_coralAcq));
         // m_operator.x().whileTrue(new AcqMoveIn(m_coralAcq));
         // m_operator.b().whileTrue(new AcqMoveOut(m_coralAcq));
 
-        m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
-        m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
-        m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
-        
+        // m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
+        // m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
+        // m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
         m_operator.rightBumper().and(m_operator.x()).whileTrue(new MoveArmToAngle(m_arm,0));
         m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
-
+        }
     }
    
 

@@ -14,6 +14,8 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,6 +44,8 @@ public class ExtensionSubsystem extends SubsystemBase {
 
     private SparkMaxConfig extensionConfig;
 
+    private DigitalInput homeSensor;
+
     protected ShuffleboardTab armTab;
 
     private GenericEntry kExtPEntry;
@@ -65,6 +69,7 @@ public class ExtensionSubsystem extends SubsystemBase {
                     kElevatorkA);
 
     public ExtensionSubsystem() {
+  if (!RobotBase.isSimulation()){
 
         extension = new SparkMax(ArmConstants.ELEVATOR_ID, MotorType.kBrushless);
         extensionController = extension.getClosedLoopController();
@@ -72,12 +77,15 @@ public class ExtensionSubsystem extends SubsystemBase {
         extensionEncoder = extension.getEncoder();
 
         extensionConfig = new SparkMaxConfig();
+
+        homeSensor = new DigitalInput(ArmConstants.EXTENSION_SENSOR_ID);
+
         armTab = Shuffleboard.getTab("ArmTab");
 
         initShuffleboard();
         configurePID();
         configureSparkMaxes();
-    
+  }
 
     }
 
@@ -96,6 +104,7 @@ public class ExtensionSubsystem extends SubsystemBase {
                 .d(kExtD)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     }
+    
     /**
      * Add any extra SparkMax setting here.
      */
@@ -162,8 +171,14 @@ public class ExtensionSubsystem extends SubsystemBase {
         extension.set(0.0);
     }
 
+    public boolean isExtensionHome(){
+        return !homeSensor.get();
+    }
+
     @Override
     public void periodic() {
+        if (!RobotBase.isSimulation()){
+
         var p = kExtPEntry.getDouble(0);
         var i = kExtIEntry.getDouble(0);
         var d = kExtDEntry.getDouble(0);
@@ -184,5 +199,6 @@ public class ExtensionSubsystem extends SubsystemBase {
             kI = i;
             kD = d;
         }
+    }
     }
 }

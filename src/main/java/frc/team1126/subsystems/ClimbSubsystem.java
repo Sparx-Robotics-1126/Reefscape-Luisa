@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -40,6 +41,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
 
     public ClimbSubsystem() {
+  if (!RobotBase.isSimulation()){
 
         climb = new SparkMax(ClimbConstants.CLIMB_ID, MotorType.kBrushless);
         climbEncoder = climb.getEncoder();
@@ -50,6 +52,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
         configurePID();
         configureSparkMaxes();
+  }
     }
 
     /*
@@ -138,6 +141,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (!RobotBase.isSimulation()){
+
         var p = kClimbPEntry.getDouble(0);
         var i = kClimbIEntry.getDouble(0);
         var d = kClimbDEntry.getDouble(0);
@@ -158,5 +163,6 @@ public class ClimbSubsystem extends SubsystemBase {
             kI = i;
             kD = d;
         }
+    }
     }
 }

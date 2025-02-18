@@ -246,12 +246,16 @@ public static final class AlignmentConstants {
     public static final class AlgaeConstants {
         public static final int ALGAE_WHEELS_ID = 21;
         public static final int ALGAE_ROTATION_ID = 22;
+        public static final int ALGAE_HOME_ID = 0; // change these
+        public static final int ALGAE_SENSOR_ID = 1; // and these
     }
 
     public static final class ArmConstants {
         public static final int TURN_ONE_ID = 31;
         public static final int TURN_TWO_ID = 32;
         public static final int ELEVATOR_ID = 33;
+        public static final int ARM_SENSOR_ID = 1; //need to be changed
+        public static final int EXTENSION_SENSOR_ID = 2; //also needs changing!!
     }
 
     public static final class PlacerConstants {
