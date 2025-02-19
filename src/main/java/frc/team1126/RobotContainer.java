@@ -264,7 +264,7 @@ public class RobotContainer {
 
     public void configureOperatorBindings() {   
 
-        m_operator.rightBumper().whileTrue(new MoveArmToAngle(m_arm, 0)); //arm home
+        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0)); //arm home
 
         m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196)); //arm l1
         m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 20.238)); //arm l2

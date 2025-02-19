@@ -102,6 +102,7 @@ public class ArmSubsystem extends SubsystemBase {
                 .p(.04)
                 .i(kTurnI)
                 .d(kTurnD)
+                .minOutput(-.04).maxOutput(.06)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     }
