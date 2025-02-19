@@ -16,17 +16,17 @@ public class MoveArmToAngle extends Command {
 
     @Override
     public void execute() {
-        if(arm.getArmAngle() > targetAngle) {
-            arm.moveToAngle(targetAngle);
-        } else if(arm.getArmAngle() < targetAngle) {
-            arm.moveToAngle(targetAngle);
-        }
+        // if(arm.getArmAngle() > targetAngle) {
+        //     arm.moveToAngle(targetAngle);
+        // } else if(arm.getArmAngle() < targetAngle) {
+        //     arm.moveToAngle(targetAngle);
+        // }
+        arm.turnReachGoal(targetAngle);
     }
 
     @Override
     public boolean isFinished() {
-        
-        if(arm.getArmAngle() == targetAngle){
+        if(arm.getArmAngle() > targetAngle){
             return true;
         }
         return false;

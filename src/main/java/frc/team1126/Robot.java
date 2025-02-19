@@ -30,7 +30,7 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
         // RobotContainer.getSmartDashboardTable();
         
-
+        SmartDashboard.putNumber("Controller speed", RobotContainer.m_operator.getLeftY());
         SmartDashboard.putData("AUTO CHOICES ", RobotContainer.m_chooser);
     }
 

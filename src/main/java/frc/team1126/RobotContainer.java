@@ -30,9 +30,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
+import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
 // import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
+import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
 // import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
 // import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
 import frc.team1126.subsystems.*;
@@ -42,7 +44,7 @@ import static edu.wpi.first.units.Units.Meter;
 public class RobotContainer {
 
     //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
-public static final ArmSubsystem m_arm = new ArmSubsystem();
+    public static final ArmSubsystem m_arm = new ArmSubsystem();
     // public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
@@ -52,8 +54,8 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
 
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
 
-    static CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
-    static CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
+    public static CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
+    public static CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
 
     public static SwerveSubsystem m_swerve = new SwerveSubsystem(
         new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -182,13 +184,15 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
 
         // human control for climb and algae
 
-        m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_climb));
+        //m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_climb));
+        m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
 
         // m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
        
         // configureChooser();
 
         configureDriverBindings();
+        configureOperatorBindings();
         DriverStation.silenceJoystickConnectionWarning(true);
 
     }
@@ -228,6 +232,9 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
             m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
             m_driver.rightTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
             m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
+            m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
+            m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
+            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
 //        m_driver.x().onTrue(Commands.runOnce(m_swerve::addFakeVisionReading));
             // m_driver.b().whileTrue(
             //     m_swerve.driveToPose(
@@ -247,8 +254,8 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
             m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
             // m_driver.x().whileTrue(new LinearDriveToPose(m_swerve, () -> m_swerve.getClosestRightBranchPose(), () -> new ChassisSpeeds()));
             //  driverController.x().whileTrue(new DriveToAprilTagCommand(swerve, m_noteCamera, driverController.getHID()));
-            m_driver.b().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(Meter.of(16.4), Meter.of(4.4)), Rotation2d.fromDegrees(180))));
-            m_driver.y().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(13, 4), Rotation2d.fromDegrees(180))));
+            // m_driver.b().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(Meter.of(16.4), Meter.of(4.4)), Rotation2d.fromDegrees(180))));
+            // m_driver.y().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(13, 4), Rotation2d.fromDegrees(180))));
             m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
             // driverController.leftBumper().whileTrue(new LinearDriveToPose(swerve, () -> swerve.getClosestLeftBranchPose(),() ->  new ChassisSpeeds()));
             // driverController.rightBumper().whileTrue(new LinearDriveToPose(swerve, () -> swerve.getClosestRightBranchPose(), () -> new ChassisSpeeds()));
@@ -256,7 +263,15 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
     }
 
     public void configureOperatorBindings() {   
-        if (!RobotBase.isSimulation()){
+
+        m_operator.rightBumper().whileTrue(new MoveArmToAngle(m_arm, 0)); //arm home
+
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196)); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 20.238)); //arm l2
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm, 27.1665)); //arm l3
+        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, 32.5)); //arm l4
+
+
 
         // m_operator.leftTrigger().whileTrue(new AcqMoveIn(m_coralAcq));
         // m_operator.rightTrigger().whileTrue(new AcqMoveOut(m_coralAcq));
@@ -266,9 +281,8 @@ public static final ArmSubsystem m_arm = new ArmSubsystem();
         // m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
         // m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
         // m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));
-        m_operator.rightBumper().and(m_operator.x()).whileTrue(new MoveArmToAngle(m_arm,0));
-        m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
-        }
+        // m_operator.rightBumper().and(m_operator.x()).whileTrue(new MoveArmToAngle(m_arm,0));
+        // m_operator.rightBumper().and(m_operator.y()).whileTrue(m_arm.setTurnGoal(90));
     }
    
 

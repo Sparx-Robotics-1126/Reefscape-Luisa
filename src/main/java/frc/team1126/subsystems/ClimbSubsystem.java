@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ClimbConstants;
@@ -49,7 +50,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
         pidController = climb.getClosedLoopController();
         climbTab = Shuffleboard.getTab("ClimbTab");
-
+        initShuffleboard();
         configurePID();
         configureSparkMaxes();
   }
@@ -65,7 +66,7 @@ public class ClimbSubsystem extends SubsystemBase {
         double kClimbD = kClimbDEntry.getDouble(0);
 
         climbConfig.closedLoop
-                .p(kClimbP)
+                .p(5)
                 .i(kClimbI)
                 .d(kClimbD)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);        
@@ -101,6 +102,7 @@ public class ClimbSubsystem extends SubsystemBase {
         kClimbDEntry = climbTab.add("Ext D", 0).getEntry();
 
         angle = climbTab.add("Angle", 0).getEntry().getDouble(0);
+        climbTab.add("Current Climb Position",0);
     }
     
     /**
@@ -122,8 +124,12 @@ public class ClimbSubsystem extends SubsystemBase {
         return climbEncoder.getPosition();
     }
 
+    public void resetAngle() {
+        climbEncoder.setPosition(0);
+    }
+
     public void climbReachGoal(double goalDegree) {
-        pidController.setReference(Units.degreesToRotations(goalDegree), ControlType.kPosition);
+        pidController.setReference(goalDegree, ControlType.kPosition);
     }
 
     public Command setClimbGoal(double degree) {
@@ -148,8 +154,8 @@ public class ClimbSubsystem extends SubsystemBase {
         var d = kClimbDEntry.getDouble(0);
         var ddd = climb.getAbsoluteEncoder();
         ddd.getPosition();
-
-        climbTab.add("Current Position", climbEncoder.getPosition());
+// climbTab.("Current Climb Position", climbEncoder.getPosition());
+        // climbTab.add("Current Climb Position", climbEncoder.getPosition());
         if (p != kP || i != kI || d != kD) {
 
             climbConfig.closedLoop
@@ -163,6 +169,8 @@ public class ClimbSubsystem extends SubsystemBase {
             kI = i;
             kD = d;
         }
+
+        SmartDashboard.putNumber("Climb position", getAngle());
     }
     }
 }

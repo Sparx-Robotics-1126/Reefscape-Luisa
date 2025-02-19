@@ -99,7 +99,7 @@ public class ArmSubsystem extends SubsystemBase {
         double kTurnD = kTurnDEntry.getDouble(0);
 
         turnConfig.closedLoop
-                .p(kTurnP)
+                .p(.04)
                 .i(kTurnI)
                 .d(kTurnD)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
@@ -140,6 +140,10 @@ public class ArmSubsystem extends SubsystemBase {
         }
     }
 
+    public void moveArm(double speed) {
+        turnMotor.set(speed);
+    }
+
     public void moveToAngle(double angle) {
         turnController.setReference(angle, ControlType.kPosition);
         double currentAngle = Math.max(getArmAngle(), 0);
@@ -171,11 +175,11 @@ public class ArmSubsystem extends SubsystemBase {
      * Returns the position of the arm
      */
     public double getArmAngle() {
-        return turnEncoder.getPosition() * (180 / Math.PI) ;
+        return turnEncoder.getPosition();
     }
     
     public void turnReachGoal(double goalDegree) {
-        turnController.setReference(Units.degreesToRotations(goalDegree), ControlType.kPosition);
+        turnController.setReference(goalDegree, ControlType.kPosition);
     }
 
     public Command setTurnGoal(double degree) {
@@ -205,7 +209,7 @@ public class ArmSubsystem extends SubsystemBase {
         var ddd = turnMotor.getAbsoluteEncoder();
         ddd.getPosition();
 
-        armTab.add("Current Position", turnEncoder.getPosition());
+        // armTab.add("Current Position", turnEncoder.getPosition());
         if (p != kP || i != kI || d != kD) {
 
             turnConfig.closedLoop
@@ -219,6 +223,7 @@ public class ArmSubsystem extends SubsystemBase {
             kI = i;
             kD = d;
         }
+        SmartDashboard.putNumber("Arm position", getArmAngle());
     }
     }
 

@@ -16,18 +16,18 @@ public class ClimbMoveToPos extends Command {
 
     @Override
     public void execute() {
-        if(climb.getAngle() > targetAngle) {
-            climb.moveClimbToPos(targetAngle);
-        } else if(climb.getAngle() < targetAngle) {
-            climb.moveClimbToPos(targetAngle);
-        }
+        // if(climb.getAngle() > targetAngle) {
+            climb.climbReachGoal(targetAngle);
+        // } else if(climb.getAngle() < targetAngle) {
+        //     climb.moveClimbToPos(targetAngle);
+        // }
     }
 
     @Override
     public boolean isFinished() {
-        if(climb.getAngle() < -160 || climb.getAngle() > 90) {
-            return true;
-        }
+        // if(climb.getAngle() < -160 || climb.getAngle() > 90) {
+        //     return true;
+        // }
         return false;
     }
     
