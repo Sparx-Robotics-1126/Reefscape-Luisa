@@ -1,6 +1,7 @@
 package frc.team1126.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -65,6 +66,13 @@ public class ArmSubsystem extends SubsystemBase {
     private double kP, kI, kD = 0;
     private double angle = 0;
 
+    ElevatorFeedforward m_feedforward =
+    new ElevatorFeedforward(
+       0.0,
+       .762,
+        .762,
+       0);
+
 //     ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.1, 0.1);
 
     public ArmSubsystem() {
@@ -72,6 +80,7 @@ public class ArmSubsystem extends SubsystemBase {
 
         turnMotor = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
         turnFollower = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
+        
         turnController = turnMotor.getClosedLoopController();
 
         turnEncoder = turnMotor.getEncoder();
@@ -98,12 +107,24 @@ public class ArmSubsystem extends SubsystemBase {
         double kTurnI = kTurnIEntry.getDouble(0);
         double kTurnD = kTurnDEntry.getDouble(0);
 
+
+        var p=.03;
         turnConfig.closedLoop
-                .p(.04)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(p)
                 .i(kTurnI)
                 .d(kTurnD)
-                .minOutput(-.04).maxOutput(.06)
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+                .outputRange(-1, 1)
+                .velocityFF(1.0/5767);
+                // .minOutput(-.04).maxOutput(.06)
+
+                turn2Config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(p)
+                .i(kTurnI)
+                .d(kTurnD)
+                .outputRange(-1, 1)
+                .velocityFF(1.0/5767);
 
     }
 
@@ -118,8 +139,8 @@ public class ArmSubsystem extends SubsystemBase {
 
         turn2Config.follow(ArmConstants.TURN_ONE_ID);
 
-        turnFollower.configure(turn2Config, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-        turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        turnFollower.configure(turn2Config, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+        turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 
     }
 
@@ -135,25 +156,26 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
 
-    public void angleToHome() {
-        if (turnEncoder.getPosition() > 0) {
-            turnMotor.set(HOME_SPEED);
-        }
-    }
+    // public void angleToHome() {
+    //     if (turnEncoder.getPosition() > 0) {
+    //         turnMotor.set(HOME_SPEED);
+    //     }
+    // }
 
     public void moveArm(double speed) {
+        // System.out.println("ddddd");
         turnMotor.set(speed);
     }
 
-    public void moveToAngle(double angle) {
-        turnController.setReference(angle, ControlType.kPosition);
-        double currentAngle = Math.max(getArmAngle(), 0);
-        if (currentAngle < MAX_ANGLE) {
-            double error = currentAngle - angle;
-            double output = turnPID.calculate(error);
-            double feedforward = ARM_FEEDFORWARD_COEFFICIENT * angle;
-            turnMotor.set(output + feedforward);
-        }
+    // public void moveToAngle(double angle) {
+    //     turnController.setReference(angle, ControlType.kPosition);
+    //     double currentAngle = Math.max(getArmAngle(), 0);
+    //     if (currentAngle < MAX_ANGLE) {
+    //         double error = currentAngle - angle;
+    //         double output = turnPID.calculate(error);
+    //         double feedforward = ARM_FEEDFORWARD_COEFFICIENT * angle;
+    //         turnMotor.set(output + feedforward);
+    //     }
 //
 //        turnController.setReference(angle, ControlType.kMAXMotionPositionControl);
 //
@@ -171,7 +193,7 @@ public class ArmSubsystem extends SubsystemBase {
 //
 //            turnMotor.set(output + feedforward);
 //        }
-    }
+    // }
     /**
      * Returns the position of the arm
      */
@@ -180,11 +202,12 @@ public class ArmSubsystem extends SubsystemBase {
     }
     
     public void turnReachGoal(double goalDegree) {
+        // System.out.println("In here " + goalDegree);
         turnController.setReference(goalDegree, ControlType.kPosition);
     }
 
     public Command setTurnGoal(double degree) {
-        System.out.println("Setting turn goal to " + degree);
+        // System.out.println("Setting turn goal to " + degree);
         return run(() -> turnReachGoal(degree));
     }
 
@@ -204,26 +227,26 @@ public class ArmSubsystem extends SubsystemBase {
         if (!RobotBase.isSimulation()){
 
         // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
-        var p = kTurnPEntry.getDouble(0);
-        var i = kTurnIEntry.getDouble(0);
-        var d = kTurnDEntry.getDouble(0);
-        var ddd = turnMotor.getAbsoluteEncoder();
-        ddd.getPosition();
+        // var p = kTurnPEntry.getDouble(0);
+        // var i = kTurnIEntry.getDouble(0);
+        // var d = kTurnDEntry.getDouble(0);
+        // var ddd = turnMotor.getAbsoluteEncoder();
+        // ddd.getPosition();
 
-        // armTab.add("Current Position", turnEncoder.getPosition());
-        if (p != kP || i != kI || d != kD) {
+        // // armTab.add("Current Position", turnEncoder.getPosition());
+        // if (p != kP || i != kI || d != kD) {
 
-            turnConfig.closedLoop
-                    .p(p)
-                    .i(i)
-                    .d(d)
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        //     turnConfig.closedLoop
+        //             .p(p)
+        //             .i(i)
+        //             .d(d)
+        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-            turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-            kP = p;
-            kI = i;
-            kD = d;
-        }
+        //     turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        //     kP = p;
+        //     kI = i;
+        //     kD = d;
+        // }
         SmartDashboard.putNumber("Arm position", getArmAngle());
     }
     }

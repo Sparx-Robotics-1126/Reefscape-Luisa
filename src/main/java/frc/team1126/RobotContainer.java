@@ -31,10 +31,13 @@ import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
 import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
+import frc.team1126.commands.subsystems.arm.ControllerMoveExtension;
 // import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
+import frc.team1126.commands.subsystems.arm.MoveExtensionToPos;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
+import frc.team1126.commands.subsystems.placer.AnalogPlacer;
 // import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
 // import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
 import frc.team1126.subsystems.*;
@@ -45,10 +48,12 @@ public class RobotContainer {
 
     //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
     public static final ArmSubsystem m_arm = new ArmSubsystem();
-    // public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
+     public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
+
+    public static final PlacerSubsystem m_placer = new PlacerSubsystem();
 
     // public static final CoralAcquisition m_coralAcq = new CoralAcquisition();
 
@@ -72,7 +77,7 @@ public class RobotContainer {
                                                                                                OperatorConstants.LEFT_Y_DEADBAND),
                                                                  () -> -MathUtil.applyDeadband(m_driver.getLeftX(),
                                                                                                OperatorConstants.DEADBAND),
-                                                                 () -> -MathUtil.applyDeadband(m_driver.getRightX(),
+                                                                 () -> -MathUtil.applyDeadband(-m_driver.getRightX(),
                                                                                                OperatorConstants.RIGHT_X_DEADBAND),
                                                                                                m_driver.getHID()::getYButtonPressed,
                                                                                                m_driver.getHID()::getAButtonPressed,
@@ -185,7 +190,10 @@ public class RobotContainer {
         // human control for climb and algae
 
         //m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_climb));
-        m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
+        // m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
+        m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_extension));
+
+        // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
 
         // m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
        
@@ -264,20 +272,24 @@ public class RobotContainer {
 
     public void configureOperatorBindings() {   
 
-        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0)); //arm home
+        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, 0))); //arm home
 
-        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196)); //arm l1
-        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 20.238)); //arm l2
-        m_operator.b().whileTrue(new MoveArmToAngle(m_arm, 27.1665)); //arm l3
-        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, 32.5)); //arm l4
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, 0.013659))))); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, -0.0831989))))); //arm l2
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm, 25.1665).alongWith(new MoveExtensionToPos(m_extension, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, -0.1801146))))); //arm l3
+        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, 31.32).alongWith(new MoveExtensionToPos(m_extension, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, -0.45723746))))); //arm l4
 
+        m_operator.rightBumper().whileTrue(new MoveExtensionToPos(m_extension, -0.41723746));
 
+        // m_operator.rightTrigger(0.01).whileTrue(new AnalogPlacer(m_operator.getRawAxis(XboxController.Axis.kRightTrigger.value), m_placer));
+        //m_operator.leftTrigger(0.01).whileTrue(new AnalogPlacer(-m_operator.getRawAxis(XboxController.Axis.kLeftTrigger.value), m_placer));
+        m_operator.rightTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kRightTrigger.value), m_placer,false));
+        m_operator.leftTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kLeftTrigger.value), m_placer,true));
 
         // m_operator.leftTrigger().whileTrue(new AcqMoveIn(m_coralAcq));
         // m_operator.rightTrigger().whileTrue(new AcqMoveOut(m_coralAcq));
         // m_operator.x().whileTrue(new AcqMoveIn(m_coralAcq));
         // m_operator.b().whileTrue(new AcqMoveOut(m_coralAcq));
-
         // m_operator.leftBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(3));
         // m_operator.leftBumper().and(m_operator.x()).whileTrue(m_extension.setExtGoal(6));
         // m_operator.rightBumper().and(m_operator.a()).whileTrue(m_extension.setExtGoal(9));

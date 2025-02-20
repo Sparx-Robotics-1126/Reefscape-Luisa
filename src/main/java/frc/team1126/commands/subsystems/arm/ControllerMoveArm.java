@@ -20,6 +20,7 @@ public class ControllerMoveArm extends Command {
 
     @Override
     public void execute() {
+        // System.out.println("rrrrrrrrrrrrrr");
         double speed =  MathUtil.applyDeadband(m_power.getAsDouble(), .1);
         m_arm.moveArm(speed);
     }

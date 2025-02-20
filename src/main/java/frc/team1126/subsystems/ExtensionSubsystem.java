@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
@@ -99,10 +100,12 @@ public class ExtensionSubsystem extends SubsystemBase {
         double kExtD = kExtDEntry.getDouble(0);
 
         extensionConfig.closedLoop
-                .p(kExtP)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .p(3.1)
                 .i(kExtI)
                 .d(kExtD)
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+                .outputRange(-1, 1)
+                .velocityFF(1.0/5767);
     }
     
     /**
@@ -122,7 +125,7 @@ public class ExtensionSubsystem extends SubsystemBase {
         kExtIEntry = armTab.add("Ext I", 0).getEntry();
         kExtDEntry = armTab.add("Ext D", 0).getEntry();
 
-        angle = armTab.add("Angle", 0).getEntry().getDouble(0);
+        // angle = armTab.add("Angle", 0).getEntry().getDouble(0);
     }
 
     /**
@@ -175,30 +178,37 @@ public class ExtensionSubsystem extends SubsystemBase {
         return !homeSensor.get();
     }
 
+
+    public void moveExtension(double speed){
+        extension.set(speed);
+    }
+
     @Override
     public void periodic() {
         if (!RobotBase.isSimulation()){
 
-        var p = kExtPEntry.getDouble(0);
-        var i = kExtIEntry.getDouble(0);
-        var d = kExtDEntry.getDouble(0);
-        var ddd = extension.getAbsoluteEncoder();
-        ddd.getPosition();
+        // var p = kExtPEntry.getDouble(0);
+        // var i = kExtIEntry.getDouble(0);
+        // var d = kExtDEntry.getDouble(0);
+        // var ddd = extension.getAbsoluteEncoder();
+        // ddd.getPosition();
 
-        armTab.add("Current Position", extensionEncoder.getPosition());
-        if (p != kP || i != kI || d != kD) {
+        // // armTab.add("Current Position", extensionEncoder.getPosition());
+        // if (p != kP || i != kI || d != kD) {
 
-            extensionConfig.closedLoop
-                    .p(p)
-                    .i(i)
-                    .d(d)
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        //     extensionConfig.closedLoop
+        //             .p(p)
+        //             .i(i)
+        //             .d(d)
+        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-            extension.configure(extensionConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-            kP = p;
-            kI = i;
-            kD = d;
-        }
+        //     extension.configure(extensionConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        //     kP = p;
+        //     kI = i;
+        //     kD = d;
+        // }
+        SmartDashboard.putNumber("Extension Position", getExtension());
     }
+       
     }
 }

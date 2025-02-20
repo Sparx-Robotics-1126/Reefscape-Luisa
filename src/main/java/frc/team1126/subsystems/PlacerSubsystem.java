@@ -1,6 +1,7 @@
 package frc.team1126.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -16,7 +17,7 @@ public class PlacerSubsystem extends SubsystemBase {
     private DigitalInput topSensor;
 
     public PlacerSubsystem() { 
-        placer = new SparkMax(PlacerConstants.PLACER_ID, null);
+        placer = new SparkMax(PlacerConstants.PLACER_ID, MotorType.kBrushless);
         placerConfig = new SparkMaxConfig();
 
         bottomSensor = new DigitalInput(PlacerConstants.PLACER_BOTTOM_ID);
@@ -53,6 +54,10 @@ public class PlacerSubsystem extends SubsystemBase {
     public void release() {
         placer.set(-1);
     }
+    
+    public void movePlacer(double speed){
+        placer.set(speed);
+    }
 
     /**
      * Returns if the top sensor sees the coral
@@ -61,6 +66,7 @@ public class PlacerSubsystem extends SubsystemBase {
     public boolean topHasCoral() {
         return topSensor.get();
     }
+
 
     /**
      * Returns if the bottom sensor sees the coral
