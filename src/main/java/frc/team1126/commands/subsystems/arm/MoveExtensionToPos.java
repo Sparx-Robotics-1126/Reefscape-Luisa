@@ -8,31 +8,27 @@ import frc.team1126.subsystems.ExtensionSubsystem;
 public class MoveExtensionToPos extends Command {
 
    private ExtensionSubsystem extension;
+   private ArmSubsystem arm;
    private double targetExtension;
 
-   public MoveExtensionToPos(ExtensionSubsystem extension, double pos) {
+   public MoveExtensionToPos(ExtensionSubsystem extension, ArmSubsystem arm, double pos) {
        addRequirements(RobotContainer.m_extension);
        this.extension = extension;
+       this.arm = arm;
        targetExtension = pos;
    }
 
    @Override
    public void execute() {
-    //    if(arm.getExtension() > targetExtension) {
-    //        arm.moveExtensionToPosition(targetExtension);
-    //    } else if(arm.getExtension() < targetExtension) {
-    //        arm.moveExtensionToPosition(targetExtension);
-    //    }
-    extension.extReachGoal(targetExtension);
+    if(arm.getArmAngle() > 30) {
+        extension.extReachGoal(targetExtension);
+    }
+       
     
    }
 
    @Override
    public boolean isFinished() {
-
-    //    if(extension.getExtension() > targetExtension){
-    //        return true;
-    //    }
        return false;
    }
 

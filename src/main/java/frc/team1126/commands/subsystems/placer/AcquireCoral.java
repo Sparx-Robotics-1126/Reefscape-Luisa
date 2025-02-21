@@ -15,15 +15,11 @@ public class AcquireCoral extends Command {
 
     @Override
     public void execute() {
-        placer.grab();
+        placer.movePlacer(-1);
     }
 
     @Override
     public boolean isFinished() {
-        
-        if(placer.topHasCoral() && placer.bottomHasCoral()) {
-            return true;
-        }
         return false;
     }
     

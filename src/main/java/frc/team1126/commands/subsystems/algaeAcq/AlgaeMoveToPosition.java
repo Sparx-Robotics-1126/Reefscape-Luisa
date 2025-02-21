@@ -16,14 +16,11 @@ public class AlgaeMoveToPosition extends Command {
 
     @Override
     public void execute() {
-        algaeAcquisition.moveToAngle(targetAngle);
+        algaeAcquisition.reachGoal(targetAngle);
     }
 
     @Override
     public boolean isFinished() {
-        if(algaeAcquisition.getAngle() > 90) {
-            return true;
-        }
         return false;
     }
 }

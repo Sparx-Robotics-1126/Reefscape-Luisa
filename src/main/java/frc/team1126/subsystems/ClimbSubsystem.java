@@ -156,19 +156,19 @@ public class ClimbSubsystem extends SubsystemBase {
         ddd.getPosition();
 // climbTab.("Current Climb Position", climbEncoder.getPosition());
         // climbTab.add("Current Climb Position", climbEncoder.getPosition());
-        if (p != kP || i != kI || d != kD) {
+        // if (p != kP || i != kI || d != kD) {
 
-            climbConfig.closedLoop
-                    .p(p)
-                    .i(i)
-                    .d(d)
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        //     climbConfig.closedLoop
+        //             .p(p)
+        //             .i(i)
+        //             .d(d)
+        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-                    climb.configure(climbConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-            kP = p;
-            kI = i;
-            kD = d;
-        }
+        //             climb.configure(climbConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        //     kP = p;
+        //     kI = i;
+        //     kD = d;
+        // }
 
         SmartDashboard.putNumber("Climb position", getAngle());
     }

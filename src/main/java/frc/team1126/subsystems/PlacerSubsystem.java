@@ -1,6 +1,7 @@
 package frc.team1126.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -11,17 +12,21 @@ import frc.team1126.Constants.PlacerConstants;
 public class PlacerSubsystem extends SubsystemBase {
 
     private SparkMax placer;
+    private SparkMax placerFollower;
     private SparkMaxConfig placerConfig;
-
+    private SparkMaxConfig placerFollowerConfig;
     private DigitalInput bottomSensor;
     private DigitalInput topSensor;
 
     public PlacerSubsystem() { 
-        placer = new SparkMax(PlacerConstants.PLACER_ID, MotorType.kBrushless);
+        placer = new SparkMax(PlacerConstants.PLACER_FOLLOWER_ID, MotorType.kBrushless);
+        // placerFollower = new SparkMax(PlacerConstants.PLACER_FOLLOWER_ID, MotorType.kBrushless);
+
         placerConfig = new SparkMaxConfig();
+        placerFollowerConfig = new SparkMaxConfig();
 
         bottomSensor = new DigitalInput(PlacerConstants.PLACER_BOTTOM_ID);
-        topSensor = new DigitalInput(PlacerConstants.PLACER_TOP_ID);
+        // topSensor = new DigitalInput(PlacerConstants.PLACER_TOP_ID);
         
         configureSparkMaxes();
     }
@@ -30,7 +35,11 @@ public class PlacerSubsystem extends SubsystemBase {
      * Add any extra SparkMax setting here.
      */
     private void configureSparkMaxes() {
-        placer.configure(placerConfig, null, null);
+        // placerFollowerConfig.follow(PlacerConstants.PLACER_ID);
+        // placerFollowerConfig.inverted(false);
+        placer.configure(placerConfig,  SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+        // placerFollower.configure(placerFollowerConfig,  SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+    
     }
 
     /**

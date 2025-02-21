@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -34,7 +35,7 @@ public class AlgaeAcquisition extends SubsystemBase {
     private SparkMaxConfig rotationConfig;
 
     private SparkClosedLoopController rotationController;
-    private PIDController pidController;
+    // private PIDController pidController;
 
     private DigitalInput homeSensor;
     private DigitalInput algaeSensor;
@@ -91,16 +92,16 @@ public class AlgaeAcquisition extends SubsystemBase {
      * configure PID settings here.
      */
     private void configurePID(){
-        pidController = new PIDController(0, 0, 0);
+        // pidController = new PIDController(0, 0, 0);
 
-        double kExtP = kRotationPEntry.getDouble(0);
-        double kExtI = kRotationIEntry.getDouble(0);
-        double kExtD = kRotationDEntry.getDouble(0);
+        // double kExtP = kRotationPEntry.getDouble(0);
+        // double kExtI = kRotationIEntry.getDouble(0);
+        // double kExtD = kRotationDEntry.getDouble(0);
 
         rotationConfig.closedLoop
-                .p(kExtP)
-                .i(kExtI)
-                .d(kExtD)
+                .p(0)
+                .i(0)
+                .d(0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
     }
@@ -126,12 +127,12 @@ public class AlgaeAcquisition extends SubsystemBase {
     }
 
     
-    public void extReachGoal(double goalDistance){
+    public void reachGoal(double goalDistance){
         rotationController.setReference(goalDistance,ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
     }
 
-    public Command setExtGoal(double distance){
-        return run(() -> extReachGoal(distance));
+    public Command setGoal(double distance){
+        return run(() -> reachGoal(distance));
     }
 
     /**
@@ -148,10 +149,10 @@ public class AlgaeAcquisition extends SubsystemBase {
         
         if (currentAngle < 90) {
             double error =  currentAngle - targetAngle;
-            double output = pidController.calculate(error);
+            // double output = pidController.calculate(error);
             double feedforward = 0.1 * targetAngle;
 
-            algaeRotation.set(output + feedforward);
+            // algaeRotation.set(output + feedforward);
         }
     }
     
@@ -159,7 +160,7 @@ public class AlgaeAcquisition extends SubsystemBase {
      * Returns the position of algae acq
      */
     public double getAngle() {
-        return rotationEncoder.getPosition() * (180 / Math.PI);
+        return rotationEncoder.getPosition();
     }
 
     public boolean isAlgaeHome(){
@@ -173,28 +174,30 @@ public class AlgaeAcquisition extends SubsystemBase {
 
         @Override
     public void periodic() {
-        if (!RobotBase.isSimulation()){
+        SmartDashboard.putBoolean("Has Algae", hasAlgae());
+        SmartDashboard.putNumber("Algae Position",rotationEncoder.getPosition() );
+        // if (!RobotBase.isSimulation()){
 
-        var p = kRotationPEntry.getDouble(0);
-        var i = kRotationIEntry.getDouble(0);
-        var d = kRotationDEntry.getDouble(0);
-        var ddd = algaeRotation.getAbsoluteEncoder();
-        ddd.getPosition();
+        // var p = kRotationPEntry.getDouble(0);
+        // var i = kRotationIEntry.getDouble(0);
+        // var d = kRotationDEntry.getDouble(0);
+        // var ddd = algaeRotation.getAbsoluteEncoder();
+        // ddd.getPosition();
 
-        algaeTab.add("Current Position", rotationEncoder.getPosition());
-        if (p != kP || i != kI || d != kD) {
+        // algaeTab.add("Current Position", rotationEncoder.getPosition());
+        // if (p != kP || i != kI || d != kD) {
 
-            rotationConfig.closedLoop
-                    .p(p)
-                    .i(i)
-                    .d(d)
-                    .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        //     rotationConfig.closedLoop
+        //             .p(p)
+        //             .i(i)
+        //             .d(d)
+        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
 
-            algaeRotation.configure(rotationConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-            kP = p;
-            kI = i;
-            kD = d;
-        }
-    }
+        //     algaeRotation.configure(rotationConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+        //     kP = p;
+        //     kI = i;
+        //     kD = d;
+        // }+
+    // }
     }
 }

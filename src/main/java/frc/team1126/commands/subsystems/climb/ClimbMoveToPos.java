@@ -1,6 +1,7 @@
 package frc.team1126.commands.subsystems.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team1126.RobotContainer;
 import frc.team1126.subsystems.ClimbSubsystem;
 
 public class ClimbMoveToPos extends Command {
@@ -9,7 +10,7 @@ public class ClimbMoveToPos extends Command {
     private double targetAngle;
 
     public ClimbMoveToPos(ClimbSubsystem climbSubsystem, double angle) {
-        addRequirements(climbSubsystem);
+        addRequirements(RobotContainer.m_climb);
         climb = climbSubsystem;
         targetAngle = angle;
     }

@@ -160,7 +160,7 @@ public class ExtensionSubsystem extends SubsystemBase {
     }
 
     public void extReachGoal(double goalDistance){
-        extensionController.setReference(goalDistance,ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
+        extensionController.setReference(goalDistance, ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
     }
 
     public Command setExtGoal(double distance){
