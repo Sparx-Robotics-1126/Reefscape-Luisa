@@ -171,7 +171,7 @@ if (visionDriveTest)
     {
       config = RobotConfig.fromGUISettings();
 
-      final boolean enableFeedforward = true;
+      final boolean enableFeedforward = false;
       // Configure AutoBuilder last
       AutoBuilder.configure(
           this::getPose,
@@ -196,7 +196,7 @@ if (visionDriveTest)
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              new PIDConstants(2, 0.0, 0.0),
               // Translation PID constants
               new PIDConstants(5.0, 0.0, 0.0)
               // Rotation PID constants
@@ -272,7 +272,6 @@ public Pose2d getClosestLeftBranchPose() {
     Pose2d current = swerveDrive.getPose();
     List<Pose2d> candidates = new ArrayList<>();
   
-    // System.out.println("Alliance " + alliance.get());
     candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[0], true));
     candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[1], false));
     candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[2], true));

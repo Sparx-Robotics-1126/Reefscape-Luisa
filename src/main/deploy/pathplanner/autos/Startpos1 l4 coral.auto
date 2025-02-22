@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "3 Meters Test"
+                  "pathName": "Startpos1 move to coral"
                 }
               },
               {
@@ -24,22 +24,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "MoveArmToL4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpinPlacerIn"
-                }
-              }
-            ]
+            "name": "SpinPlacerIn"
           }
         },
         {
@@ -49,32 +36,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": " 3 Meters Test 2"
+                  "pathName": "Startpos1 move from coral"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveArmToCoral"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "MoveArmToCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IngestCoral"
+                  "name": "MoveArmToHome"
                 }
               }
             ]

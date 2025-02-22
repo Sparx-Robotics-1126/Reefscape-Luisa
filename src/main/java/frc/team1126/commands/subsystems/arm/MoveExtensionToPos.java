@@ -20,9 +20,11 @@ public class MoveExtensionToPos extends Command {
 
    @Override
    public void execute() {
-    if(arm.getArmAngle() > 30) {
+    if(arm.getArmAngle() > 7.5 ){
+    if(Math.abs(targetExtension) > 0) {
         extension.extReachGoal(targetExtension);
     }
+}
        
     
    }

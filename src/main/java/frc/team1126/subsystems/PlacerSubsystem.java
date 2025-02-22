@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.PlacerConstants;
 
@@ -19,8 +20,8 @@ public class PlacerSubsystem extends SubsystemBase {
     private DigitalInput topSensor;
 
     public PlacerSubsystem() { 
-        placer = new SparkMax(PlacerConstants.PLACER_FOLLOWER_ID, MotorType.kBrushless);
-        // placerFollower = new SparkMax(PlacerConstants.PLACER_FOLLOWER_ID, MotorType.kBrushless);
+        placer = new SparkMax(PlacerConstants.PLACER_ID, MotorType.kBrushless);
+        placerFollower = new SparkMax(PlacerConstants.PLACER_FOLLOWER_ID, MotorType.kBrushless);
 
         placerConfig = new SparkMaxConfig();
         placerFollowerConfig = new SparkMaxConfig();
@@ -35,10 +36,9 @@ public class PlacerSubsystem extends SubsystemBase {
      * Add any extra SparkMax setting here.
      */
     private void configureSparkMaxes() {
-        // placerFollowerConfig.follow(PlacerConstants.PLACER_ID);
-        // placerFollowerConfig.inverted(false);
+        placerFollowerConfig.follow(PlacerConstants.PLACER_ID,true);
         placer.configure(placerConfig,  SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
-        // placerFollower.configure(placerFollowerConfig,  SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+        placerFollower.configure(placerFollowerConfig,  SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
     
     }
 
@@ -82,6 +82,12 @@ public class PlacerSubsystem extends SubsystemBase {
      * @return true if the bottom sensor sees the coral, false otherwise
      */
     public boolean bottomHasCoral() {
-        return bottomSensor.get();
+        return !bottomSensor.get();
+    }
+
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+        SmartDashboard.putBoolean("Bottom sensor", bottomHasCoral());
     }
 }

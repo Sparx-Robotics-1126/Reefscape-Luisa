@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "SpinPlacerIn"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "starting pos 2 move to coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveArmToL4"
+                }
+              }
+            ]
           }
         },
         {
@@ -17,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "New Path"
+                  "pathName": "starting pos 2 move from coral"
                 }
               },
               {

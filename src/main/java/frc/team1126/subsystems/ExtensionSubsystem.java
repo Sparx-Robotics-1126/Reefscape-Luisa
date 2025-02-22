@@ -104,7 +104,7 @@ public class ExtensionSubsystem extends SubsystemBase {
                 .p(3.1)
                 .i(kExtI)
                 .d(kExtD)
-                .outputRange(-1, 1)
+                .outputRange(-.25, .25)
                 .velocityFF(1.0/5767);
     }
     
