@@ -185,10 +185,10 @@ public class RobotContainer {
 
         // human control for climb and algae
 
-        //m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
+        // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
         // m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-         m_extension.setDefaultCommand(new MoveExtensionToPos(m_extension, m_arm, 0));
+         m_extension.setDefaultCommand(new MoveExtensionToPos(m_extension, m_arm, .01));
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
 
