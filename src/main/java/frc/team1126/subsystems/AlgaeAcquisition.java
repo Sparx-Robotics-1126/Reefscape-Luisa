@@ -127,11 +127,11 @@ public class AlgaeAcquisition extends SubsystemBase {
     }
 
     
-    public void reachGoal(double goalDistance){
+    public void reachGoal(double goalDistance) {
         rotationController.setReference(goalDistance,ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
     }
 
-    public Command setGoal(double distance){
+    public Command setGoal(double distance) {
         return run(() -> reachGoal(distance));
     }
 

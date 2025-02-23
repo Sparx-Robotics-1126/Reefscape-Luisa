@@ -8,21 +8,14 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.revrobotics.spark.ClosedLoopSlot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,32 +24,26 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
-import frc.team1126.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
 import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
-import frc.team1126.commands.subsystems.arm.ControllerMoveExtension;
-// import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
+import frc.team1126.commands.subsystems.arm.MoveExtHome;
 import frc.team1126.commands.subsystems.arm.MoveExtensionToPos;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
-import frc.team1126.commands.subsystems.climb.ClimbMoveUntil;
 import frc.team1126.commands.subsystems.placer.AcquireCoral;
 import frc.team1126.commands.subsystems.placer.AnalogPlacer;
 import frc.team1126.commands.subsystems.placer.IngestCoral;
 import frc.team1126.commands.subsystems.placer.PlaceCoral;
 import frc.team1126.commands.subsystems.placer.PositionCoral;
-// import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
-// import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
 import frc.team1126.subsystems.*;
 import swervelib.SwerveInputStream;
-import static edu.wpi.first.units.Units.Meter;
 
 public class RobotContainer {
 
-    //private final int m_rotationAxis = XboxController.Axis.kRightX.value;
     public static final ArmSubsystem m_arm = new ArmSubsystem();
      public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
-    // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
+    
+     public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
 
@@ -95,7 +82,7 @@ public class RobotContainer {
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_swerve.getSwerveDrive(),
                                                                 () -> m_driver.getLeftY() * -1,
                                                                 () -> m_driver.getLeftX() * -1)
-                                                            .withControllerRotationAxis(m_driver::getRightX)
+                                                            .withControllerRotationAxis( () -> m_driver.getRightX() * -1)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
@@ -186,9 +173,9 @@ public class RobotContainer {
         // human control for climb and algae
 
         // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
-        m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
+         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
         // m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-         m_extension.setDefaultCommand(new MoveExtensionToPos(m_extension, m_arm, .01));
+         m_extension.setDefaultCommand(new MoveExtHome(m_extension, m_arm, .01, ClosedLoopSlot.kSlot1));
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
 
@@ -233,13 +220,18 @@ public class RobotContainer {
             m_driver.back().whileTrue(m_swerve.centerModulesCommand());
             m_driver.leftBumper().onTrue(Commands.none());
             m_driver.rightBumper().onTrue(Commands.none());
+        //         new Trigger(() -> m_driver.getLeftTriggerAxis() > 0.5)
+        // .whileTrue(new ClimbMoveArm(() -> m_operator.getLeftTriggerAxis(), m_climb));
+
+            // m_driver.leftTrigger().whileTrue(new ClimbMoveArm(() -> m_operator.getLeftTriggerAxis(XboxController.Axis.kLeftTrigger.value), m_climb));
+            m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         } else {
             m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
             m_driver.rightTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
-            m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
+            m_driver.a().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
             m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
             m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
-            //m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
+            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
             //m_driver.b().whileTrue(new IngestCoral(m_placer));
 
 
@@ -274,18 +266,17 @@ public class RobotContainer {
 
     public void configureOperatorBindings() {   
 
-        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
-        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01)).alongWith(new IngestCoral(m_placer).andThen(new PositionCoral(m_placer)))); //arm to coral station
+        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01, ClosedLoopSlot.kSlot1))); //arm home
+        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01, ClosedLoopSlot.kSlot0)).alongWith(new IngestCoral(m_placer).andThen(new PositionCoral(m_placer)))); //arm to coral station
         //m_operator.povRight().whileTrue(new PositionCoral(m_placer));
 
-
-        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, 0.013659))))); //arm l1
-        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))))); //arm l2
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0, ClosedLoopSlot.kSlot0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, 0.013659, ClosedLoopSlot.kSlot0))))); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0, ClosedLoopSlot.kSlot0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm,-0.0831989, ClosedLoopSlot.kSlot0))))); //arm l2
         // m_operator.b().whileTrue(new MoveArmToAngle(m_arm, 27.1665).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.1))))); //arm l3
-        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  25.5).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm, -0.25))))); //arm l4
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  25.5).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0, ClosedLoopSlot.kSlot0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm, -0.25, ClosedLoopSlot.kSlot0))))); 
         m_operator.y()
         .whileTrue(new MoveArmToAngle(m_arm, 33.5)
-        .alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm, -0.55))))); //arm l4
+        .alongWith(new MoveExtensionToPos(m_extension,m_arm, 0, ClosedLoopSlot.kSlot0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm, -0.65, ClosedLoopSlot.kSlot0))))); //arm l4
 
         // m_operator.rightBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 5)); //move out
         // m_operator.leftBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 0)); // move home
@@ -338,19 +329,20 @@ public class RobotContainer {
     /* REGISTER PATHPLANNER COMMANDS HERE */
     public void configurePathPlanner() {
         
-        NamedCommands.registerCommand("Wait", new WaitCommand(1));
+        // NamedCommands.registerCommand("Wait", new WaitCommand(1));
 
-        NamedCommands.registerCommand("MoveArmToHome", new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0)));
-        NamedCommands.registerCommand("MoveArmToCoral", new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0)));
-        NamedCommands.registerCommand("MoveArmToL1", new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, 0.013659)))).withTimeout(1));
-        NamedCommands.registerCommand("MoveArmToL2", new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.0831989)))).withTimeout(1));
-        NamedCommands.registerCommand("MoveArmToL3", new MoveArmToAngle(m_arm, 25.1665).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.1801146)))).withTimeout(1));
-        NamedCommands.registerCommand("MoveArmToL4", new MoveArmToAngle(m_arm, 32).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.45723746)))).withTimeout(1));
+        // NamedCommands.registerCommand("MoveArmToHome", new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0)));
+        // NamedCommands.registerCommand("MoveArmToCoral", new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0)));
+        // NamedCommands.registerCommand("MoveArmToL1", new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, 0.013659)))).withTimeout(1));
+        // NamedCommands.registerCommand("MoveArmToL2", new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.0831989)))).withTimeout(1));
+        // NamedCommands.registerCommand("MoveArmToL3", new MoveArmToAngle(m_arm, 25.1665).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.1801146)))).withTimeout(1));
+        // NamedCommands.registerCommand("MoveArmToL4", new MoveArmToAngle(m_arm, 33.5).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1)
+        // .andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.45723746)))).withTimeout(1));
 
-        NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer).withTimeout(1));
-        NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));
+        // NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer).withTimeout(1));
+        // NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));
 
-        NamedCommands.registerCommand("IngestCoral", new IngestCoral(m_placer));
+        // NamedCommands.registerCommand("IngestCoral", new IngestCoral(m_placer));
 
         
 

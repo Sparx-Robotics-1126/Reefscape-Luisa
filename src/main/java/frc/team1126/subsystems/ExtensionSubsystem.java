@@ -27,6 +27,7 @@ public class ExtensionSubsystem extends SubsystemBase {
     private static final double MAX_EXTENSION = 90.0;
     private static final double HOME_SPEED = -0.5;
     private static final double EXTENSION_FEEDFORWARD_COEFFICIENT = 0.1;
+    
     /** Subsystem-wide setpoints */
     public enum Setpoint {
         kFeederStation,
@@ -105,7 +106,14 @@ public class ExtensionSubsystem extends SubsystemBase {
                 .i(kExtI)
                 .d(kExtD)
                 .outputRange(-.25, .25)
-                .velocityFF(1.0/5767);
+                .velocityFF(1.0/5767)
+                .p(2,ClosedLoopSlot.kSlot1)
+                .i(kExtI,ClosedLoopSlot.kSlot1)
+                .d(kExtD,ClosedLoopSlot.kSlot1)
+                .outputRange(-.15, .15,ClosedLoopSlot.kSlot1)
+                .velocityFF(1.0/5767,ClosedLoopSlot.kSlot1);
+
+                
     }
     
     /**
@@ -159,13 +167,13 @@ public class ExtensionSubsystem extends SubsystemBase {
         return extensionEncoder.getPosition();
     }
 
-    public void extReachGoal(double goalDistance){
-        extensionController.setReference(goalDistance, ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
+    public void extReachGoal(double goalDistance, ClosedLoopSlot slot){
+        extensionController.setReference(goalDistance, ControlType.kPosition, slot, m_feedforward.calculate(.5));
     }
 
-    public Command setExtGoal(double distance){
-        return run(() -> extReachGoal(distance));
-    }
+    // public Command setExtGoal(double distance){
+    //     return run(() -> extReachGoal(distance));
+    // }
 
     /**
      * Sets the speed of the extension to 0

@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -49,7 +50,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     private DigitalInput homeSensor;
 
-
     private RelativeEncoder turnEncoder;
 
     private PIDController turnPID;
@@ -66,8 +66,9 @@ public class ArmSubsystem extends SubsystemBase {
     private double kP, kI, kD = 0;
     private double angle = 0;
 
-    ElevatorFeedforward m_feedforward =
-    new ElevatorFeedforward(
+
+    ArmFeedforward m_feedforward = 
+    new ArmFeedforward(
        0.0,
        .762,
         .762,
@@ -108,13 +109,13 @@ public class ArmSubsystem extends SubsystemBase {
         double kTurnD = kTurnDEntry.getDouble(0);
 
 
-        var p=.03;
+        var p=.055;
         turnConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(p)
                 .i(kTurnI)
                 .d(kTurnD)
-                .outputRange(-1, 1)
+                .outputRange(-.2, .2)
                 .velocityFF(1.0/5767);
                 // .minOutput(-.04).maxOutput(.06)
 
@@ -123,7 +124,7 @@ public class ArmSubsystem extends SubsystemBase {
                 .p(p)
                 .i(kTurnI)
                 .d(kTurnD)
-                .outputRange(-1, 1)
+                .outputRange(-.2, .2)
                 .velocityFF(1.0/5767);
 
     }
@@ -152,14 +153,14 @@ public class ArmSubsystem extends SubsystemBase {
         kTurnDEntry = armTab.add("Turn D", 0).getEntry();
         angle = armTab.add("Angle", 0).getEntry().getDouble(0);
         // armTab.add("Turn Command", setTurnGoal(angle));
-//   SmartDashboard.putData("Turn Command", new InstantCommand(() -> setTurnGoal(angle)));
+//   SmartDashboard.putData("Turn Command", new InstantCommand(() -> setTurnGoal(angle)))
     }
 
 
     // public void angleToHome() {
     //     if (turnEncoder.getPosition() > 0) {
     //         turnMotor.set(HOME_SPEED);
-    //     }
+    //     } 
     // }
 
     public void moveArm(double speed) {
@@ -195,7 +196,7 @@ public class ArmSubsystem extends SubsystemBase {
 //        }
     // }
     /**
-     * Returns the position of the arm
+     * @return the position of the arm
      */
     public double getArmAngle() {
         return turnEncoder.getPosition();
@@ -203,7 +204,7 @@ public class ArmSubsystem extends SubsystemBase {
     
     public void turnReachGoal(double goalDegree) {
         // System.out.println("In here " + goalDegree);
-        turnController.setReference(goalDegree, ControlType.kPosition);
+        turnController.setReference(goalDegree, ControlType.kPosition,ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDegree, 1));
     }
 
     public Command setTurnGoal(double degree) {

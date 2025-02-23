@@ -31,5 +31,10 @@ public class ClimbMoveToPos extends Command {
         // }
         return false;
     }
-    
+    @Override
+    public void end(boolean interrupted) {
+        if (interrupted) {
+            climb.stopTurn();
+        }
+    }
 }

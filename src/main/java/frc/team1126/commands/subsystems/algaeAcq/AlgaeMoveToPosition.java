@@ -1,6 +1,7 @@
 package frc.team1126.commands.subsystems.algaeAcq;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.team1126.RobotContainer;
 import frc.team1126.subsystems.AlgaeAcquisition;
 
 public class AlgaeMoveToPosition extends Command {
@@ -9,7 +10,7 @@ public class AlgaeMoveToPosition extends Command {
     double targetAngle;
     
     public AlgaeMoveToPosition(AlgaeAcquisition algaeAcquisition, double angle) {
-        addRequirements(algaeAcquisition);
+        addRequirements(RobotContainer.m_algae);
         this.algaeAcquisition = algaeAcquisition;
         targetAngle = angle;
     }
@@ -21,6 +22,6 @@ public class AlgaeMoveToPosition extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return false;          
     }
 }

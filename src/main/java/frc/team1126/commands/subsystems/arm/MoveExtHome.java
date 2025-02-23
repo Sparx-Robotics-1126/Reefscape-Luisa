@@ -24,7 +24,7 @@ public class MoveExtHome extends Command {
 
    @Override
    public void execute() {
-        extension.extReachGoal(targetExtension,slot);
+        extension.extReachGoal(targetExtension, slot);
        
     
    }

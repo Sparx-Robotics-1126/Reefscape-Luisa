@@ -154,7 +154,8 @@ public class ClimbSubsystem extends SubsystemBase {
         var d = kClimbDEntry.getDouble(0);
         var ddd = climb.getAbsoluteEncoder();
         ddd.getPosition();
-// climbTab.("Current Climb Position", climbEncoder.getPosition());
+        
+        // climbTab.("Current Climb Position", climbEncoder.getPosition());
         // climbTab.add("Current Climb Position", climbEncoder.getPosition());
         // if (p != kP || i != kI || d != kD) {
 
