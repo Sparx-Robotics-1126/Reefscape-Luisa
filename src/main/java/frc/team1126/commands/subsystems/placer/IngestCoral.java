@@ -15,7 +15,7 @@ public class IngestCoral extends Command {
     @Override
     public void execute() {
         if(placer.bottomHasCoral()) {
-            placer.movePlacer(-.25);
+            placer.movePlacer(-.35);
         }
         else {
             placer.movePlacer(.1);

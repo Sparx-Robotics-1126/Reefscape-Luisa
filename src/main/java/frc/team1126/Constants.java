@@ -30,6 +30,17 @@ public final class Constants {
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
   public static final double ROBOT_WIDTH_W_BUMBERS = .762;
+
+  
+  public final class BatteryMonitor {
+    public final static double MAXVOLTAGE = 12;
+    public final static double MINVOLTAGE = 9;
+    // LEDCOUNT has to be a multiple of 3
+    public final static int LEDCOUNT = 15;
+
+    public final static double BRIGHTNESS = 0.2;
+  };
+  
   public static class OperatorConstants
   {
 
@@ -300,6 +311,7 @@ public static final class AlignmentConstants {
         public static final double kForward = 0.5;
         public static final double kReverse = -0.5;
       }
+
     }
     /**
      * Constants revolving around auton modes.
