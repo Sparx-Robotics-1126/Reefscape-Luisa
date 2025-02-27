@@ -24,9 +24,9 @@ public class AnalogPlacer extends Command {
     public void execute() {
         double speed;
         if(isReverse){
-            speed =  -MathUtil.applyDeadband(m_power.getAsDouble(), .1);
+            speed =  -MathUtil.applyDeadband(m_power.getAsDouble(), .1) * .5;
         }else {
-            speed =  MathUtil.applyDeadband(m_power.getAsDouble(), .1);
+            speed =  MathUtil.applyDeadband(m_power.getAsDouble(), .1) * .5;
         }
        
         m_placer.movePlacer(speed);

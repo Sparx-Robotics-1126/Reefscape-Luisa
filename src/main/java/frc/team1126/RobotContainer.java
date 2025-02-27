@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
+import frc.team1126.commands.subsystems.LED.RainbowCommand;
 import frc.team1126.commands.subsystems.LED.SetSolidColorCommand;
 import frc.team1126.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
 import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
@@ -41,8 +42,8 @@ import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.arm.MoveExtHome;
 import frc.team1126.commands.subsystems.arm.MoveExtensionToPos;
 import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
-// import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
-// import frc.team1126.commands.subsystems.climb.ClimbMoveUntil;
+import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
+import frc.team1126.commands.subsystems.climb.ClimbMoveUntil;
 import frc.team1126.commands.subsystems.placer.AcquireCoral;
 import frc.team1126.commands.subsystems.placer.AnalogPlacer;
 import frc.team1126.commands.subsystems.placer.IngestCoral;
@@ -61,7 +62,7 @@ public class RobotContainer {
      public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
-    //public static final ClimbSubsystem m_climb = new ClimbSubsystem();
+    public static final ClimbSubsystem m_climb = new ClimbSubsystem();
 
     public static final PlacerSubsystem m_placer = new PlacerSubsystem();
 
@@ -70,7 +71,7 @@ public class RobotContainer {
     public static CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
     public static CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
 
-    private final LEDs m_ledSubsystem = new LEDs(0, 200); //PORT IS PWM!!!
+    private final LEDs ledSubsystem = new LEDs(0, 200); //PORT IS PWM!!!
 
     public static SwerveSubsystem m_swerve = new SwerveSubsystem(
         new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -193,9 +194,9 @@ public class RobotContainer {
         // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
          //m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-         m_extension.setDefaultCommand(new MoveExtHome(m_extension, .2));
+         m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
 
-        m_ledSubsystem.setDefaultCommand(new SetSolidColorCommand(m_ledSubsystem, new Color8Bit(255, 0, 0)));
+        ledSubsystem.setDefaultCommand(new RainbowCommand(ledSubsystem));
 
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
@@ -245,9 +246,9 @@ public class RobotContainer {
             m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
             m_driver.rightTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
             m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
-            // m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
-            // m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
-            //m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
+            m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
+            m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
+            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
             //m_driver.b().whileTrue(new IngestCoral(m_placer));
 
 
@@ -282,19 +283,16 @@ public class RobotContainer {
 
     public void configureOperatorBindings() {   
 
-        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, -.01
-).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
-        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01)).alongWith(new IngestCoral(m_placer).andThen(new PositionCoral(m_placer)))); //arm to coral station
-        //m_operator.povRight().whileTrue(new PositionCoral(m_placer));
+       // WE NEED TO MAKE L3 HIGHER THAN 24.45223045349121 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, -.01).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
+        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01))
+                   .alongWith(new IngestCoral(m_placer).andThen(new PositionCoral(m_placer))));                                                         //arm to coral station
 
-        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, 0.013659))))); //arm l1
-        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))))); //arm l2
-        // m_operator.b().whileTrue(new MoveArmToAngle(m_arm, 27.1665).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension,m_arm, -0.1))))); //arm l3
-        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  25.5).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(1).andThen(new WaitCommand(1).andThen(new MoveExtensionToPos(m_extension, m_arm, -0.25))))); //arm l4
-        m_operator.y()
-        .whileTrue(new MoveArmToAngle(m_arm, 33.5)
-        .alongWith(new MoveExtensionToPos(m_extension,m_arm, 0).withTimeout(0.5).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55)))); //arm l4
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension,m_arm, 0.013659))); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))); //arm l2
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  26.5).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.25))); //arm l3
+        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, 33.5).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55))); //arm l4
 
         // m_operator.rightBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 5)); //move out
         // m_operator.leftBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 0)); // move home

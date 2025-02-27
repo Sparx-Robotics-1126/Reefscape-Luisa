@@ -1,26 +1,33 @@
-// package frc.team1126.commands.subsystems.climb;
+package frc.team1126.commands.subsystems.climb;
 
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.team1126.RobotContainer;
-// import frc.team1126.subsystems.ClimbSubsystem;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.team1126.RobotContainer;
+import frc.team1126.subsystems.ClimbSubsystem;
 
-// public class ClimbMoveUntil extends Command{
+public class ClimbMoveUntil extends Command{
     
-// public ClimbSubsystem climb;
+public ClimbSubsystem climb;
 
-// public double targetAngle;
+public double targetAngle;
 
-//     public ClimbMoveUntil(ClimbSubsystem climb, double angle){
-//         addRequirements(RobotContainer.m_climb);
-//         this.climb = climb;
-//         targetAngle = angle;
-//     }
+    public ClimbMoveUntil(ClimbSubsystem climb, double angle){
+        addRequirements(RobotContainer.m_climb);
+        this.climb = climb;
+        targetAngle = angle;
+    }
 
 
-//     @Override
-//     public void execute(){
-//         if(climb.getAngle() < targetAngle){
-//             climb.moveClimb(2);
-//         }
-//     }
-// }
+    @Override
+    public void execute(){
+        if(climb.getAngle() < targetAngle){
+            climb.moveClimb(2);
+        }
+    }
+
+
+    @Override
+    public void end(boolean interrupted) {
+        // TODO Auto-generated method stub
+        super.end(interrupted);
+    }
+}
