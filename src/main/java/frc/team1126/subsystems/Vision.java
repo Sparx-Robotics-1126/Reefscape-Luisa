@@ -347,28 +347,28 @@ public class Vision
     //                            Units.inchesToMeters(5.5)),
     //          VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     LEFT_CAM("left",
-             new Rotation3d(0, 0, Math.toRadians(90)),
+             new Rotation3d(0, 18, Math.toRadians(30)),
              new Translation3d(Units.inchesToMeters(13.5),
                                Units.inchesToMeters(13.5),
-                               Units.inchesToMeters(5.5)),
+                               Units.inchesToMeters(8.1)),
              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Right Camera
      */
     RIGHT_CAM("right",
-              new Rotation3d(0,0, Math.toRadians(-90)),
+              new Rotation3d(0,18, Math.toRadians(-30)),
               new Translation3d(Units.inchesToMeters(-13.5),
                                 Units.inchesToMeters(-13.5),
-                                Units.inchesToMeters(5.5)),
+                                Units.inchesToMeters(8.1)),
               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Center Camera
      */
-    CENTER_CAM("center",
-               new Rotation3d(0, 0, 0),
-               new Translation3d(Units.inchesToMeters(13.5),
-                                 Units.inchesToMeters(0),
-                                 Units.inchesToMeters(5.5)),
+    CENTER_CAM("front",
+               new Rotation3d(0, 18, 0),
+               new Translation3d(Units.inchesToMeters(0),
+                                 Units.inchesToMeters(13.5),
+                                 Units.inchesToMeters(5.75)),
                VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
               //  CENTER_CAM("center",
               //  new Rotation3d(0, Units.degreesToRadians(18), 0),

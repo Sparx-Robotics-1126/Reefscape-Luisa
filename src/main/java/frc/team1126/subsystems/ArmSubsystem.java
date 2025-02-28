@@ -65,6 +65,7 @@ public class ArmSubsystem extends SubsystemBase {
 
     private double kP, kI, kD = 0;
     private double angle = 0;
+    private double targetAngle;
 
     ElevatorFeedforward m_feedforward =
     new ElevatorFeedforward(
@@ -200,10 +201,12 @@ public class ArmSubsystem extends SubsystemBase {
     public double getArmAngle() {
         return turnEncoder.getPosition();
     }
+
     
     public void turnReachGoal(double goalDegree) {
         // System.out.println("In here " + goalDegree);
         turnController.setReference(goalDegree, ControlType.kPosition);
+        targetAngle = goalDegree;
     }
 
     public Command setTurnGoal(double degree) {
@@ -224,31 +227,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!RobotBase.isSimulation()){
-
-        // turnConfig.closedLoop.pid(kTurnPEntry.getDouble(0), kTurnIEntry.getDouble(0), kTurnDEntry.getDouble(0));
-        // var p = kTurnPEntry.getDouble(0);
-        // var i = kTurnIEntry.getDouble(0);
-        // var d = kTurnDEntry.getDouble(0);
-        // var ddd = turnMotor.getAbsoluteEncoder();
-        // ddd.getPosition();
-
-        // // armTab.add("Current Position", turnEncoder.getPosition());
-        // if (p != kP || i != kI || d != kD) {
-
-        //     turnConfig.closedLoop
-        //             .p(p)
-        //             .i(i)
-        //             .d(d)
-        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-        //     turnMotor.configure(turnConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-        //     kP = p;
-        //     kI = i;
-        //     kD = d;
-        // }
         SmartDashboard.putNumber("Arm position", getArmAngle());
-    }
+        SmartDashboard.putNumber("Target Positon", targetAngle);
     }
 
 }

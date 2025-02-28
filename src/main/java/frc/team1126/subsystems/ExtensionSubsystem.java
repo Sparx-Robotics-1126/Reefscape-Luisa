@@ -61,6 +61,8 @@ public class ExtensionSubsystem extends SubsystemBase {
     private double kP, kI, kD = 0;
     private double angle;
 
+    private double targetExtension;
+
 
     ElevatorFeedforward m_feedforward =
             new ElevatorFeedforward(
@@ -161,6 +163,7 @@ public class ExtensionSubsystem extends SubsystemBase {
 
     public void extReachGoal(double goalDistance){
         extensionController.setReference(goalDistance, ControlType.kPosition, ClosedLoopSlot.kSlot0, m_feedforward.calculate(goalDistance));
+        targetExtension = goalDistance;
     }
 
     public Command setExtGoal(double distance){
@@ -185,30 +188,10 @@ public class ExtensionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!RobotBase.isSimulation()){
 
-        // var p = kExtPEntry.getDouble(0);
-        // var i = kExtIEntry.getDouble(0);
-        // var d = kExtDEntry.getDouble(0);
-        // var ddd = extension.getAbsoluteEncoder();
-        // ddd.getPosition();
-
-        // // armTab.add("Current Position", extensionEncoder.getPosition());
-        // if (p != kP || i != kI || d != kD) {
-
-        //     extensionConfig.closedLoop
-        //             .p(p)
-        //             .i(i)
-        //             .d(d)
-        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-        //     extension.configure(extensionConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-        //     kP = p;
-        //     kI = i;
-        //     kD = d;
-        // }
         SmartDashboard.putNumber("Extension Position", getExtension());
-    }
+        SmartDashboard.putNumber("Target Positon", targetExtension);
+    
        
     }
 }

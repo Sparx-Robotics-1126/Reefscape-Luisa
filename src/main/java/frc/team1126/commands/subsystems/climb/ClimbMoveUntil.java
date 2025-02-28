@@ -11,7 +11,7 @@ public ClimbSubsystem climb;
 public double targetAngle;
 
     public ClimbMoveUntil(ClimbSubsystem climb, double angle){
-        addRequirements(RobotContainer.m_climb);
+        //addRequirements(RobotContainer.m_climb);
         this.climb = climb;
         targetAngle = angle;
     }

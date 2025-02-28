@@ -2,7 +2,10 @@ package frc.team1126.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
@@ -68,9 +71,9 @@ public void setGradient(Color8Bit startColor, Color8Bit endColor) {
     update();
 }
 
-public void setPulse(Color8Bit color, int pulseRate) {
+public void setPulse(Color8Bit color, int pulseRate, int startIndex) {
     int brightness = (int) (128 + 127 * Math.sin(chaseIndex / (double) pulseRate * 2 * Math.PI));
-    for (int i = 0; i < ledBuffer.getLength(); i++) {
+    for (int i = startIndex; i < ledBuffer.getLength(); i++) {
         ledBuffer.setRGB(i, color.red * brightness / 255, color.green * brightness / 255, color.blue * brightness / 255);
     }
     chaseIndex++;
@@ -88,5 +91,15 @@ public AddressableLEDBuffer getLedBuffer() {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+    }
+
+    public Command setAllianceColorCommand() {
+        return run(() -> {
+            if (DriverStation.getAlliance().get() == Alliance.Blue ) {
+                setGradient(new Color8Bit(0, 0, 255), new Color8Bit(0, 255, 0));
+            } else {
+                setGradient(new Color8Bit(255, 0, 0), new Color8Bit(255, 255, 0));
+            }
+        });
     }
 }

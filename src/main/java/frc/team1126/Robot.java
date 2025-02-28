@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team1126.commands.EndGameRumble;
+import frc.team1126.subsystems.LEDs;
 
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private EndGameRumble rumble = new EndGameRumble(RobotContainer.m_driver);
     public static RobotContainer robotContainer;
     public static int ledColor;
-    // public static final CANdleSubsystem m_candleSubsystem = new CANdleSubsystem();
 
     @Override
     public void robotInit() {
@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        RobotContainer.ledSubsystem.setAllianceColorCommand();
+        
     }
 
     @Override

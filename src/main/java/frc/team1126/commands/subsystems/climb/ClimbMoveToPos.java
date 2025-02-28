@@ -10,7 +10,7 @@ public class ClimbMoveToPos extends Command {
     private double targetAngle;
 
     public ClimbMoveToPos(ClimbSubsystem climbSubsystem, double angle) {
-        addRequirements(RobotContainer.m_climb);
+       //addRequirements(RobotContainer.m_climb);
         climb = climbSubsystem;
         targetAngle = angle;
     }

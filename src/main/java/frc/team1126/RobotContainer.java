@@ -10,19 +10,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,28 +24,21 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
+import frc.team1126.commands.subsystems.LED.PulseCommand;
 import frc.team1126.commands.subsystems.LED.RainbowCommand;
-import frc.team1126.commands.subsystems.LED.SetSolidColorCommand;
-import frc.team1126.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
 import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
-import frc.team1126.commands.subsystems.arm.ControllerMoveExtension;
-// import frc.team1126.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.arm.MoveExtHome;
 import frc.team1126.commands.subsystems.arm.MoveExtensionToPos;
-import frc.team1126.commands.subsystems.climb.ClimbMoveArm;
 import frc.team1126.commands.subsystems.climb.ClimbMoveToPos;
-import frc.team1126.commands.subsystems.climb.ClimbMoveUntil;
 import frc.team1126.commands.subsystems.placer.AcquireCoral;
 import frc.team1126.commands.subsystems.placer.AnalogPlacer;
 import frc.team1126.commands.subsystems.placer.IngestCoral;
 import frc.team1126.commands.subsystems.placer.PlaceCoral;
 import frc.team1126.commands.subsystems.placer.PositionCoral;
-// import frc.team1126.commands.subsystems.coralAcq.AcqMoveIn;
-// import frc.team1126.commands.subsystems.coralAcq.AcqMoveOut;
+
 import frc.team1126.subsystems.*;
 import swervelib.SwerveInputStream;
-import static edu.wpi.first.units.Units.Meter;
 
 public class RobotContainer {
 
@@ -62,7 +47,7 @@ public class RobotContainer {
      public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
-    public static final ClimbSubsystem m_climb = new ClimbSubsystem();
+    // public static final ClimbSubsystem m_climb = new ClimbSubsystem();
 
     public static final PlacerSubsystem m_placer = new PlacerSubsystem();
 
@@ -71,7 +56,7 @@ public class RobotContainer {
     public static CommandXboxController m_driver = new CommandXboxController(Constants.GeneralConstants.DRIVER_CONTROLLER_ID);
     public static CommandXboxController m_operator = new CommandXboxController(Constants.GeneralConstants.OPERATOR_CONTROLLER_ID);
 
-    private final LEDs ledSubsystem = new LEDs(0, 200); //PORT IS PWM!!!
+    public static final LEDs ledSubsystem = new LEDs(0, 200); //PORT IS PWM!!!
 
     public static SwerveSubsystem m_swerve = new SwerveSubsystem(
         new File(Filesystem.getDeployDirectory(), "swerve"));
@@ -99,12 +84,12 @@ public class RobotContainer {
    * Converts driver input into a field-relative ChassisSpeeds that is controlled by angular velocity.
    */
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(m_swerve.getSwerveDrive(),
-                                                                () -> m_driver.getLeftY() * -1,
-                                                                () -> m_driver.getLeftX() * -1)
+                                                                () -> m_driver.rightBumper().getAsBoolean() ? m_driver.getLeftY() * -0.5 : m_driver.getLeftY() * -1,
+                                                                () -> m_driver.rightBumper().getAsBoolean() ? m_driver.getLeftX() * -0.5 : m_driver.getLeftX() * -1)
                                                             .withControllerRotationAxis(() -> m_driver.getRightX() * -1 )
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
-                                                            .allianceRelativeControl(true);
+                                                            .allianceRelativeControl(true);                                         
   /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
    */
@@ -196,7 +181,9 @@ public class RobotContainer {
          //m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
          m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
 
-        ledSubsystem.setDefaultCommand(new RainbowCommand(ledSubsystem));
+        ledSubsystem.setDefaultCommand(new PulseCommand(ledSubsystem, new Color8Bit(255,0,0), 2, 94));
+
+
 
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
@@ -246,36 +233,18 @@ public class RobotContainer {
             m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
             m_driver.rightTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
             m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
-            m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
-            m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
-            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
+            // m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
+            // m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
+            // m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
+            m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
+            m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
             //m_driver.b().whileTrue(new IngestCoral(m_placer));
 
-
-
-
-//        m_driver.x().onTrue(Commands.runOnce(m_swerve::addFakeVisionReading));
-            // m_driver.b().whileTrue(
-            //     m_swerve.driveToPose(
-            //       new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-            //                       );
-            //                     //   m_driver.y().whileTrue(m_swerve.aimAtSpeaker(2));
-            //                       m_driver.start().whileTrue(Commands.none());
-            //                       m_driver.back().whileTrue(Commands.none());
-            //                       m_driver.leftBumper().whileTrue(Commands.runOnce(m_swerve::lock, m_swerve).repeatedly());
-
-            //                       m_driver.rightBumper().onTrue(Commands.none());
-            // m_driver.y().onTrue(new ChaseLEDColorCommand(ledSubsystem, new Color8Bit(255, 0, 0), 10)); // Chasing red color
-            // m_driver.x().onTrue(new GradientCommand(ledSubsystem, new Color8Bit(0,0,255), new Color8Bit(255,0,0)));
-            // m_driver.a().onTrue(new RainbowCommand(ledSubsystem));
-            // m_driver.b().onTrue(new PulseCommand(ledSubsystem, new Color8Bit(0, 255, 0), 7));
-            //m_driver.leftBumper().onTrue(new SetSolidColorCommand(ledSubsystem, new Color8Bit(0,0,255)));
-            m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
             // m_driver.x().whileTrue(new LinearDriveToPose(m_swerve, () -> m_swerve.getClosestRightBranchPose(), () -> new ChassisSpeeds()));
             //  driverController.x().whileTrue(new DriveToAprilTagCommand(swerve, m_noteCamera, driverController.getHID()));
             // m_driver.b().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(Meter.of(16.4), Meter.of(4.4)), Rotation2d.fromDegrees(180))));
             // m_driver.y().whileTrue(m_swerve.driveToPose(new Pose2d(new Translation2d(13, 4), Rotation2d.fromDegrees(180))));
-            m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
+           
             // driverController.leftBumper().whileTrue(new LinearDriveToPose(swerve, () -> swerve.getClosestLeftBranchPose(),() ->  new ChassisSpeeds()));
             // driverController.rightBumper().whileTrue(new LinearDriveToPose(swerve, () -> swerve.getClosestRightBranchPose(), () -> new ChassisSpeeds()));
         }

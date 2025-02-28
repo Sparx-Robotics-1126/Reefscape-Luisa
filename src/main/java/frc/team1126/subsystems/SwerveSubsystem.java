@@ -73,7 +73,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Enable vision odometry updates while driving.
    */
-  private final boolean             visionDriveTest     = false;
+  private final boolean             visionDriveTest     = true;
   /**
    * PhotonVision class to keep an accurate odometry.
    */
@@ -111,7 +111,7 @@ public class SwerveSubsystem extends SubsystemBase
    swerveDrive.setAutoCenteringModules(true);
 if (visionDriveTest)
     {
-    //  setupPhotonVision();
+     setupPhotonVision();
       // Stop the odometry thread if we are using vision that way we can synchronize updates better.
       swerveDrive.stopOdometryThread();
     }
@@ -149,7 +149,7 @@ if (visionDriveTest)
     {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
-      vision.updateVisionField();
+      // vision.updateVisionField();
 //      vision.updatePoseEstimation(swerveDrive);
     }
   }
