@@ -16,7 +16,7 @@ public class PositionCoral extends Command {
     @Override
     public void execute() {
         // if(placer.bottomHasCoral()) {
-            placer.movePlacer(-.25);
+            placer.movePlacer(-.1);
         // }
     //     else {
     //         placer.movePlacer(0);

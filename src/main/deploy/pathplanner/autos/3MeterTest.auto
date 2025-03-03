@@ -19,6 +19,12 @@
                 "data": {
                   "name": "MoveArmToL4"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToL4"
+                }
               }
             ]
           }
@@ -36,7 +42,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "SpinPlacerIn"
+                  "name": "MoveExtensionToL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpinPlacerOut"
                 }
               }
             ]
@@ -57,6 +69,12 @@
                 "data": {
                   "name": "MoveArmToCoral"
                 }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToCoral"
+                }
               }
             ]
           }
@@ -69,6 +87,12 @@
                 "type": "named",
                 "data": {
                   "name": "MoveArmToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToCoral"
                 }
               },
               {

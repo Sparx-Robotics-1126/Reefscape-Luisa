@@ -85,6 +85,10 @@ public class PlacerSubsystem extends SubsystemBase {
         return !bottomSensor.get();
     }
 
+    public double getSpeed(){
+        return placer.get();
+    }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
