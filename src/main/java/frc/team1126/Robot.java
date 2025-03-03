@@ -5,6 +5,7 @@
 package frc.team1126;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,13 +16,15 @@ import frc.team1126.subsystems.LEDs;
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
     private EndGameRumble rumble = new EndGameRumble(RobotContainer.m_driver);
-    public static RobotContainer robotContainer;
+    public static RobotContainer m_robotContainer;
     public static int ledColor;
+    private Timer disabledTimer;
 
     @Override
     public void robotInit() {
         enableLiveWindowInTest(true);
-        robotContainer = new RobotContainer();
+        m_robotContainer = new RobotContainer();
+        disabledTimer = new Timer();
         // Autos.init();
     }
 
@@ -32,18 +35,27 @@ public class Robot extends TimedRobot {
         
         SmartDashboard.putNumber("Controller speed", RobotContainer.m_operator.getLeftY());
         SmartDashboard.putData("AUTO CHOICES ", RobotContainer.m_chooser);
-        SmartDashboard.putNumber("Vision X Distance", RobotContainer.m_swerve.getPose().getX());
-        SmartDashboard.putNumber("Vision Y Distance", RobotContainer.m_swerve.getPose().getY());
+        // SmartDashboard.putNumber("Vision X Distance", RobotContainer.m_swerve.getPose().getX());
+        // SmartDashboard.putNumber("Vision Y Distance", RobotContainer.m_swerve.getPose().getY());
     }
 
     @Override
     public void disabledInit() {
         RobotContainer.ledSubsystem.setAllianceColorCommand();
+        disabledTimer.reset();
+        disabledTimer.start();
         
     }
 
     @Override
     public void disabledPeriodic() {
+        if (disabledTimer.hasElapsed(Constants.DrivebaseConstants.WHEEL_LOCK_TIME))
+        {
+          m_robotContainer.setMotorBrake(false);
+          disabledTimer.stop();
+          disabledTimer.reset();
+        }
+
         if (RobotBase.isReal())
         {
             
@@ -57,7 +69,8 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         // robotContainer.setMotorBrake(true);
-        autonomousCommand = robotContainer.getAutonomousCommand();
+        m_robotContainer.setMotorBrake(true);
+        autonomousCommand = m_robotContainer.getAutonomousCommand();
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null) {
@@ -76,8 +89,17 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+      // This makes sure that the autonomous stops running when
+    // teleop starts running. If you want the autonomous to
+    // continue until interrupted by another command, remove
+    // this line or comment it out.
         if (autonomousCommand != null)
+        {
             autonomousCommand.cancel();
+        } else
+        {
+        CommandScheduler.getInstance().cancelAll();
+        }
     }
 
     @Override

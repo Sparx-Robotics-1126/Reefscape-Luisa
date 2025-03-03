@@ -5,6 +5,7 @@
 package frc.team1126;
 
 import java.io.File;
+import java.util.Set;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -38,6 +39,7 @@ import frc.team1126.commands.subsystems.placer.PlaceCoral;
 import frc.team1126.commands.subsystems.placer.PositionCoral;
 
 import frc.team1126.subsystems.*;
+import frc.team1126.systems.TargetingSystem;
 import swervelib.SwerveInputStream;
 
 public class RobotContainer {
@@ -60,6 +62,8 @@ public class RobotContainer {
 
     public static SwerveSubsystem m_swerve = new SwerveSubsystem(
         new File(Filesystem.getDeployDirectory(), "swerve"));
+
+         private final TargetingSystem targetingSystem = new TargetingSystem();
 
  // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
@@ -230,14 +234,22 @@ public class RobotContainer {
             m_driver.leftBumper().onTrue(Commands.none());
             m_driver.rightBumper().onTrue(Commands.none());
         } else {
-            //m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
-            m_driver.leftTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
+            m_driver.leftTrigger().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
+            // m_driver.leftTrigger().onChange(new InstantCommand(() -> m_swerve.zeroGyroWithAlliance()));
             m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
             m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
             m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
             m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
-            m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
+            // m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
             m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
+            m_driver.rightBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestRightBranchPose()));
+
+            //this is right joystick press
+    //         m_driver.button(17).whileTrue(
+    // targetingSystem.autoTargetCommand(m_swerve::getPose)
+    //           .andThen(Commands.defer(()-> m_swerve.driveToPose(targetingSystem.getTargetPose()), Set.of(m_swerve))));
+            //   .andThen(Commands.defer(scoringSystem::scoreCoral,  Set.of(elevator, algaeArm,coralArm,drivebase))));
+
             //m_driver.b().whileTrue(new IngestCoral(m_placer));
 
             // m_driver.x().whileTrue(new LinearDriveToPose(m_swerve, () -> m_swerve.getClosestRightBranchPose(), () -> new ChassisSpeeds()));
@@ -359,5 +371,8 @@ public class RobotContainer {
     //     GenericEntry test = tab.add("test variable", 1).getEntry();
     // }
 
-
+    public void setMotorBrake(boolean brake)
+    {
+      m_swerve.setMotorBrake(brake);
+    }
 }

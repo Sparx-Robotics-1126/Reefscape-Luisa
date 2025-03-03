@@ -40,6 +40,12 @@ public final class Constants {
 
     public final static double BRIGHTNESS = 0.2;
   };
+  public static final class DrivebaseConstants
+  {
+
+    // Hold time on motor brakes when disabled
+    public static final double WHEEL_LOCK_TIME = 10; // seconds
+  }
   
   public static class OperatorConstants
   {
@@ -72,6 +78,9 @@ public final class Constants {
 
     /* Field related constants */
     public static final class FieldConstants {
+
+
+      
         // List of possible scoring locations as Pose2d objects
         public static final List<Pose2d> SCORING_POSITIONS =
                 List.of(
