@@ -347,29 +347,31 @@ public class Vision
     //                            Units.inchesToMeters(5.5)),
     //          VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     LEFT_CAM("left",
-             new Rotation3d(3.3, 22, Math.toRadians(-6)),
-             new Translation3d(-13.5,
-                               16.6,
-                               111),
+             new Rotation3d(0, 72, Math.toRadians(41.7)),
+             new Translation3d(Units.inchesToMeters(11.25),
+                               Units.inchesToMeters(14),
+                               Units.inchesToMeters(10.475)),
              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
     /**
      * Right Camera
      */
     RIGHT_CAM("right",
-              new Rotation3d(1.4,16.4, Math.toRadians(8)),
-              new Translation3d(-15.5,
-                                21.3,
-                                111),
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+              new Rotation3d(0,69.9, Math.toRadians(34.2)),
+              new Translation3d(Units.inchesToMeters(13.125),
+                                Units.inchesToMeters(-12),
+                                Units.inchesToMeters(10.475)),
+              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1))
+
     /**
      * Center Camera
      */
-    CENTER_CAM("front",
-               new Rotation3d(10, -14.5,Math.toRadians(11)),
-               new Translation3d(-7.5,
-                                18.1,
-                                 111),
-               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
+    // CENTER_CAM("front",
+    //            new Rotation3d(10, -14.5,Math.toRadians(11)),
+    //            new Translation3d(-7.5,
+    //                             18.1,
+    //                              111),
+    //            VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1))
+               ;
               //  CENTER_CAM("center",
               //  new Rotation3d(0, Units.degreesToRadians(18), 0),
               //  new Translation3d(Units.inchesToMeters(13.5),
