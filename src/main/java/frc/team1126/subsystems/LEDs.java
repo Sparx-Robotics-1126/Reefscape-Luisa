@@ -71,9 +71,9 @@ public void setGradient(Color8Bit startColor, Color8Bit endColor) {
     update();
 }
 
-public void setPulse(Color8Bit color, int pulseRate, int startIndex) {
+public void setPulse(Color8Bit color, int pulseRate, int startIndex, int endIndex) {
     int brightness = (int) (128 + 127 * Math.sin(chaseIndex / (double) pulseRate * 2 * Math.PI));
-    for (int i = startIndex; i < ledBuffer.getLength(); i++) {
+    for (int i = startIndex; i < endIndex; i++) {
         ledBuffer.setRGB(i, color.red * brightness / 255, color.green * brightness / 255, color.blue * brightness / 255);
     }
     chaseIndex++;

@@ -6,8 +6,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -18,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -45,16 +42,10 @@ public class AlgaeAcquisition extends SubsystemBase {
     private double kRotationkV =.762 ;
     private double kRotationkA = 0.0;
 
-    private GenericEntry kRotationPEntry;
-    private GenericEntry kRotationIEntry;
-    private GenericEntry kRotationDEntry;
-
     protected ShuffleboardTab algaeTab;
 
-    private double kP, kI, kD = 0;
     private double angle;
 
-    
     ElevatorFeedforward m_feedforward =
             new ElevatorFeedforward(
                     kRotationkS,
@@ -67,7 +58,7 @@ public class AlgaeAcquisition extends SubsystemBase {
     public AlgaeAcquisition() {
         if (!RobotBase.isSimulation()){
 
-        algaeWheels = new SparkMax(AlgaeConstants.ALGAE_WHEELS_ID, MotorType.kBrushless);
+         algaeWheels = new SparkMax(AlgaeConstants.ALGAE_WHEELS_ID, MotorType.kBrushless);
          algaeRotation = new SparkMax(AlgaeConstants.ALGAE_ROTATION_ID, MotorType.kBrushless);
 
          homeSensor = new DigitalInput(AlgaeConstants.ALGAE_HOME_ID);
@@ -92,11 +83,6 @@ public class AlgaeAcquisition extends SubsystemBase {
      * configure PID settings here.
      */
     private void configurePID(){
-        // pidController = new PIDController(0, 0, 0);
-
-        // double kExtP = kRotationPEntry.getDouble(0);
-        // double kExtI = kRotationIEntry.getDouble(0);
-        // double kExtD = kRotationDEntry.getDouble(0);
 
         rotationConfig.closedLoop
                 .p(0)
@@ -136,27 +122,6 @@ public class AlgaeAcquisition extends SubsystemBase {
     }
 
     /**
-     * Moves the algae acq to an angle
-     * @param angle the angle to move to
-     */
-    public void moveToAngle(double angle) {
-       double targetAngle = angle;
-        double currentAngle = getAngle();
-
-        if(currentAngle < 0){
-            currentAngle = 0;
-        }
-        
-        if (currentAngle < 90) {
-            double error =  currentAngle - targetAngle;
-            // double output = pidController.calculate(error);
-            double feedforward = 0.1 * targetAngle;
-
-            // algaeRotation.set(output + feedforward);
-        }
-    }
-    
-    /**
      * Returns the position of algae acq
      */
     public double getAngle() {
@@ -172,32 +137,10 @@ public class AlgaeAcquisition extends SubsystemBase {
     }
 
 
-        @Override
+    @Override
     public void periodic() {
+
         SmartDashboard.putBoolean("Has Algae", hasAlgae());
         SmartDashboard.putNumber("Algae Position",rotationEncoder.getPosition() );
-        // if (!RobotBase.isSimulation()){
-
-        // var p = kRotationPEntry.getDouble(0);
-        // var i = kRotationIEntry.getDouble(0);
-        // var d = kRotationDEntry.getDouble(0);
-        // var ddd = algaeRotation.getAbsoluteEncoder();
-        // ddd.getPosition();
-
-        // algaeTab.add("Current Position", rotationEncoder.getPosition());
-        // if (p != kP || i != kI || d != kD) {
-
-        //     rotationConfig.closedLoop
-        //             .p(p)
-        //             .i(i)
-        //             .d(d)
-        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-        //     algaeRotation.configure(rotationConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-        //     kP = p;
-        //     kI = i;
-        //     kD = d;
-        // }+
-    // }
     }
 }

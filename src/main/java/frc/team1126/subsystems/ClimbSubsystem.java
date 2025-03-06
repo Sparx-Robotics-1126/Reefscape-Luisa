@@ -1,18 +1,13 @@
 package frc.team1126.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -37,7 +32,6 @@ public class ClimbSubsystem extends SubsystemBase {
 
     protected ShuffleboardTab climbTab;
 
-    private double kP, kI, kD = 0;
     private double angle;
 
 
@@ -77,23 +71,6 @@ public class ClimbSubsystem extends SubsystemBase {
      */
     private void configureSparkMaxes() {
         climb.configure(climbConfig, null, null);
-    }
-
-    /**
-     * Moves the climber to a specific angle 
-     * @param angle the angle to move the climber to
-     */
-    public void moveClimbToPos(double angle) {
-        double targetAngle = angle;
-        double currentAngle = getAngle();
-
-        if (currentAngle > -160 || currentAngle < 90 ) { // these should be made constants at some point!!
-            double error =  currentAngle - targetAngle;
-//            double output = pidController.calculate(error);
-            double feedforward = 0.1 * targetAngle;
-
-//            climb.set(output + feedforward);
-        }
     }
 
     private void initShuffleboard(){
@@ -147,30 +124,6 @@ public class ClimbSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!RobotBase.isSimulation()){
-
-        var p = kClimbPEntry.getDouble(0);
-        var i = kClimbIEntry.getDouble(0);
-        var d = kClimbDEntry.getDouble(0);
-        var ddd = climb.getAbsoluteEncoder();
-        ddd.getPosition();
-// climbTab.("Current Climb Position", climbEncoder.getPosition());
-        // climbTab.add("Current Climb Position", climbEncoder.getPosition());
-        // if (p != kP || i != kI || d != kD) {
-
-        //     climbConfig.closedLoop
-        //             .p(p)
-        //             .i(i)
-        //             .d(d)
-        //             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-
-        //             climb.configure(climbConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
-        //     kP = p;
-        //     kI = i;
-        //     kD = d;
-        // }
-
         SmartDashboard.putNumber("Climb position", getAngle());
-    }
     }
 }

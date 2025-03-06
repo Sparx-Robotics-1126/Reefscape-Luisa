@@ -213,27 +213,6 @@ public static final class AlignmentConstants {
             4.912, 
             4.770,
             Rotation2d.fromDegrees(-120));
-
-
-      final Pose2d[] APRILTAGS_BLU = new Pose2d[6];
-
-      APRILTAGS_BLU[0] = new Pose2d(3.074, 4.021, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_BLU[1] = new Pose2d(3.798, 2.829, Rotation2d.fromDegrees(59.79)); 
-      APRILTAGS_BLU[2] = new Pose2d(5.165, 2.84, Rotation2d.fromDegrees(121.227));
-      APRILTAGS_BLU[3] = new Pose2d(5.889, 3.82, Rotation2d.fromDegrees(180));
-      APRILTAGS_BLU[4] = new Pose2d(5.178, 5.184, Rotation2d.fromDegrees(-120.351));
-      APRILTAGS_BLU[5] = new Pose2d(3.976, 5.227, Rotation2d.fromDegrees(-59.744));
-
-      final Pose2d[] APRILTAGS_RED = new Pose2d[6]; //GIVE THESE VALUES!!!!!!!!!!!!!!!!!!!!!!!
-
-      APRILTAGS_RED[0] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_RED[1] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_RED[2] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_RED[3] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_RED[4] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-      APRILTAGS_RED[5] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
-
-      
     }
 
     public static final Translation2d CORAL_OFFSET_FROM_ROBOT_CENTER = new Translation2d(0,0);
@@ -362,5 +341,27 @@ public static final class AlignmentConstants {
     //     public static final double XY_CONTROLLER_P = 4;
     //     public static final double THETA_CONTROLLER_P = 1;
     // }
+
+    public static final class AprilTagPositions {
+      public static final Pose2d[] APRILTAGS_BLU = new Pose2d[6];
+        static {
+          APRILTAGS_BLU[0] = new Pose2d(3.074, 4.021, Rotation2d.fromDegrees(0.0));
+          APRILTAGS_BLU[1] = new Pose2d(3.798, 2.829, Rotation2d.fromDegrees(59.79)); 
+          APRILTAGS_BLU[2] = new Pose2d(5.165, 2.84, Rotation2d.fromDegrees(121.227));
+          APRILTAGS_BLU[3] = new Pose2d(5.889, 3.82, Rotation2d.fromDegrees(180));
+          APRILTAGS_BLU[4] = new Pose2d(5.178, 5.184, Rotation2d.fromDegrees(-120.351));
+          APRILTAGS_BLU[5] = new Pose2d(3.976, 5.227, Rotation2d.fromDegrees(-59.744));
+        }
+  
+      public static final Pose2d[] APRILTAGS_RED = new Pose2d[6];
+        static {
+          APRILTAGS_RED[0] = new Pose2d(14.472, 4.034, Rotation2d.fromDegrees(180));
+          APRILTAGS_RED[1] = new Pose2d(4.034, 5.196, Rotation2d.fromDegrees(-120.478));
+          APRILTAGS_RED[2] = new Pose2d(12.341, 5.225, Rotation2d.fromDegrees(-60.158));
+          APRILTAGS_RED[3] = new Pose2d(11.672, 4.011, Rotation2d.fromDegrees(0.0));
+          APRILTAGS_RED[4] = new Pose2d(-60.158, 2.834, Rotation2d.fromDegrees(60.195));
+          APRILTAGS_RED[5] = new Pose2d(60.195, 60.195, Rotation2d.fromDegrees(120.407));
+        }
+    }
 }
   

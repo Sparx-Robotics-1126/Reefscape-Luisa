@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.team1126.Constants;
 import frc.team1126.Constants.AlignmentConstants;
+import frc.team1126.Constants.AprilTagPositions;
 
 import java.io.File;
 import java.io.IOException;
@@ -323,12 +324,41 @@ public Pose2d getClosestLeftBranchPose() {
     return nearest;
   }
 
+  //new apriltag method - REMEMBER TO EXPLAIN THE FLIPPINGUTIL
   public Pose2d getApriltagPose(boolean isLeft){
-    if(isLeft){
-      return getClosestLeftBranchPose();
+    Optional<Alliance> alliance = DriverStation.getAlliance();
+    Pose2d current = swerveDrive.getPose();
+    List<Pose2d> candidates = new ArrayList<>();
+
+    if(alliance.get() == DriverStation.Alliance.Blue) {
+      for(int i = 0; i < 6; i++) {
+
+        if(isLeft) {
+           candidates.add(offsetBranchPose(AprilTagPositions.APRILTAGS_BLU[i], true));
+        } else {
+          candidates.add(offsetBranchPose(AprilTagPositions.APRILTAGS_BLU[i], false));
+        }
+      }
     } else {
-      return getClosestRightBranchPose();
+        for(int i = 0; i < 6; i++) {
+          if(isLeft) {
+            candidates.add(offsetBranchPose(AprilTagPositions.APRILTAGS_RED[i], true));
+          } else {
+            candidates.add(offsetBranchPose(AprilTagPositions.APRILTAGS_RED[i], false));
+          }
+        }
     }
+
+    Pose2d nearest = candidates.get(getClosestFace(current));
+    System.out.println("Apriltag " + nearest);
+
+    nearest = alliance.isPresent() ? 
+      alliance.get() == DriverStation.Alliance.Blue ?
+        nearest : 
+        FlippingUtil.flipFieldPose(nearest)
+    : nearest;
+
+    return nearest;
   }
 
    public Pose2d offsetBranchPose(Pose2d pose, boolean isLeftBranch) {

@@ -30,6 +30,7 @@ import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
 import frc.team1126.commands.subsystems.LED.PulseCommand;
 import frc.team1126.commands.subsystems.LED.RainbowCommand;
+import frc.team1126.commands.subsystems.LED.TeamLights;
 import frc.team1126.commands.subsystems.arm.ControllerMoveArm;
 import frc.team1126.commands.subsystems.arm.MoveArmToAngle;
 import frc.team1126.commands.subsystems.arm.MoveExtHome;
@@ -186,12 +187,9 @@ public class RobotContainer {
         // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
          //m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-         m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
+        m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
 
-        ledSubsystem.setDefaultCommand(new RainbowCommand(ledSubsystem));
-
-
-
+        ledSubsystem.setDefaultCommand(new TeamLights(ledSubsystem));
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
 
@@ -287,7 +285,6 @@ public class RobotContainer {
 
     }
    
-
     double getXSpeed() {
         int pov = m_driver.getHID().getPOV();
         double finalX;
@@ -363,18 +360,11 @@ public class RobotContainer {
      */
 
     public Command getAutonomousCommand() {
-        // // the command to be run in autonomous
-
-        // return _chooser.getSelected();
+        
+        // the command to be run in autonomous
         return m_chooser.getSelected();
-        // return swerve.getAutonomousCommand(_chooser.().getName(), true);
 
     }
-
-    // public static void getSmartDashboardTable() {
-    //     ShuffleboardTab tab = Shuffleboard.getTab("SmartDashboard");
-    //     GenericEntry test = tab.add("test variable", 1).getEntry();
-    // }
 
     public void setMotorBrake(boolean brake)
     {

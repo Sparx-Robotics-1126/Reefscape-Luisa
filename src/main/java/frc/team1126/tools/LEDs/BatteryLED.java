@@ -7,7 +7,6 @@ package frc.team1126.tools.LEDs;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.team1126.Constants;
 // import frc.robot.tools.MathTools;

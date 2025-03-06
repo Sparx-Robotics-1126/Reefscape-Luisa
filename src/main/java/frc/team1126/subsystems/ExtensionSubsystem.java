@@ -11,8 +11,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -24,9 +22,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.team1126.Constants.ArmConstants;
 
 public class ExtensionSubsystem extends SubsystemBase {
-    private static final double MAX_EXTENSION = 90.0;
-    private static final double HOME_SPEED = -0.5;
-    private static final double EXTENSION_FEEDFORWARD_COEFFICIENT = 0.1;
+
     /** Subsystem-wide setpoints */
     public enum Setpoint {
         kFeederStation,
@@ -40,8 +36,6 @@ public class ExtensionSubsystem extends SubsystemBase {
     private SparkClosedLoopController extensionController;
 
     private RelativeEncoder extensionEncoder;
-
-    private PIDController extensionPID;
 
     private SparkMaxConfig extensionConfig;
 
@@ -58,7 +52,6 @@ public class ExtensionSubsystem extends SubsystemBase {
     private double kElevatorkV =.762 ;
     private double kElevatorkA = 0.0;
 
-    private double kP, kI, kD = 0;
     private double angle;
 
     private double targetExtension;
@@ -131,21 +124,6 @@ public class ExtensionSubsystem extends SubsystemBase {
     }
 
     /**
-     * Moves the extension to a specific position
-     * @param position the position to move the extension to
-     */
-    public void moveExtensionToPosition(double position) {
-
-        double currentPos = Math.max(getExtension(), 0);
-        if (currentPos < MAX_EXTENSION) {
-            double error = currentPos - position;
-            double output = extensionPID.calculate(error);
-            double feedforward = EXTENSION_FEEDFORWARD_COEFFICIENT * position;
-            extension.set(output + feedforward);
-        }
-    }
-
-    /**
      * Moves the extension to home
      */
     public void extensionToHome() {
@@ -180,7 +158,6 @@ public class ExtensionSubsystem extends SubsystemBase {
     public boolean isExtensionHome(){
         return !homeSensor.get();
     }
-
 
     public void moveExtension(double speed){
         extension.set(speed);

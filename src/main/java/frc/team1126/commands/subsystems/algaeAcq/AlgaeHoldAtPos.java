@@ -16,7 +16,7 @@ public class AlgaeHoldAtPos extends Command{
 
     @Override
     public void execute() {
-        algaeAcquisition.moveToAngle(targetAngle);
+        algaeAcquisition.reachGoal(targetAngle);
     }
 
     @Override
