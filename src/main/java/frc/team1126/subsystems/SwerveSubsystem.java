@@ -24,6 +24,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -155,6 +156,9 @@ if (visionDriveTest)
       vision.updatePoseEstimation(swerveDrive);
       vision.updateVisionField();
      //vision.updatePoseEstimation(swerveDrive);
+     SmartDashboard.putNumber("Current X", swerveDrive.getPose().getTranslation().getX());
+     SmartDashboard.putNumber("Current Y", swerveDrive.getPose().getTranslation().getY());
+     SmartDashboard.putNumber("Rotation", swerveDrive.getPose().getRotation().getDegrees());
     }
   }
 
@@ -308,6 +312,7 @@ public Pose2d getClosestLeftBranchPose() {
     candidates.add(offsetBranchPose(AlignmentConstants.kCENTER_FACES[5], true));
 
     Pose2d nearest = candidates.get(getClosestFace(current));
+    System.out.println("Apriltag " + nearest);
 
     nearest = alliance.isPresent() ? 
       alliance.get() == DriverStation.Alliance.Blue ?
@@ -316,6 +321,14 @@ public Pose2d getClosestLeftBranchPose() {
     : nearest;
 
     return nearest;
+  }
+
+  public Pose2d getApriltagPose(boolean isLeft){
+    if(isLeft){
+      return getClosestLeftBranchPose();
+    } else {
+      return getClosestRightBranchPose();
+    }
   }
 
    public Pose2d offsetBranchPose(Pose2d pose, boolean isLeftBranch) {

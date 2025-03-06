@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.config.PIDConstants;
@@ -29,7 +31,7 @@ public final class Constants {
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
-  public static final double ROBOT_WIDTH_W_BUMBERS = .762;
+  public static final double ROBOT_WIDTH_W_BUMBERS = .755;
 
   
   public final class BatteryMonitor {
@@ -172,8 +174,8 @@ public static final class AlignmentConstants {
    
     public static final double kINTER_BRANCH_DIST_METER = 0.34;
     public static final Pose2d[] kCENTER_FACES =
-        new Pose2d[6]; // Starting facing the driver station in clockwise order
-    static {
+        new Pose2d[6]; // Starting facing the driver station in clockwise order 
+      static {
       // Initialize faces
       kCENTER_FACES[0] =
         //bottom
@@ -211,6 +213,27 @@ public static final class AlignmentConstants {
             4.912, 
             4.770,
             Rotation2d.fromDegrees(-120));
+
+
+      final Pose2d[] APRILTAGS_BLU = new Pose2d[6];
+
+      APRILTAGS_BLU[0] = new Pose2d(3.074, 4.021, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_BLU[1] = new Pose2d(3.798, 2.829, Rotation2d.fromDegrees(59.79)); 
+      APRILTAGS_BLU[2] = new Pose2d(5.165, 2.84, Rotation2d.fromDegrees(121.227));
+      APRILTAGS_BLU[3] = new Pose2d(5.889, 3.82, Rotation2d.fromDegrees(180));
+      APRILTAGS_BLU[4] = new Pose2d(5.178, 5.184, Rotation2d.fromDegrees(-120.351));
+      APRILTAGS_BLU[5] = new Pose2d(3.976, 5.227, Rotation2d.fromDegrees(-59.744));
+
+      final Pose2d[] APRILTAGS_RED = new Pose2d[6]; //GIVE THESE VALUES!!!!!!!!!!!!!!!!!!!!!!!
+
+      APRILTAGS_RED[0] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_RED[1] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_RED[2] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_RED[3] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_RED[4] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+      APRILTAGS_RED[5] = new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0));
+
+      
     }
 
     public static final Translation2d CORAL_OFFSET_FROM_ROBOT_CENTER = new Translation2d(0,0);
@@ -276,6 +299,10 @@ public static final class AlignmentConstants {
         public static final int ELEVATOR_ID = 33;
         public static final int ARM_SENSOR_ID = 1; //need to be changed
         public static final int EXTENSION_SENSOR_ID = 2; //also needs changing!!
+        public static final double L1_ARM_POS = 11.76196;
+        public static final double L2_ARM_POS = 22.238;
+        public static final double L3_ARM_POS = 26.5;
+        public static final double L4_ARM_POS = 33.5;
     }
 
     public static final class PlacerConstants {

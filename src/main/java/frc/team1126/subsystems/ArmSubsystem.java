@@ -67,6 +67,11 @@ public class ArmSubsystem extends SubsystemBase {
     private double angle = 0;
     private double targetAngle;
 
+    public boolean isL1;
+    public boolean isL2;
+    public boolean isL3;
+    public boolean isL4;
+
     ElevatorFeedforward m_feedforward =
     new ElevatorFeedforward(
        0.0,
@@ -207,6 +212,28 @@ public class ArmSubsystem extends SubsystemBase {
         // System.out.println("In here " + goalDegree);
         turnController.setReference(goalDegree, ControlType.kPosition);
         targetAngle = goalDegree;
+        if(goalDegree == ArmConstants.L1_ARM_POS){
+            isL1 = true;
+            isL2 = false;
+            isL3 = false;
+            isL4 = false;
+        } else if (goalDegree == ArmConstants.L2_ARM_POS){
+            isL2 = true;
+            isL1 = false;
+            isL3 = false;
+            isL4 = false;
+        } else if (goalDegree == ArmConstants.L3_ARM_POS){
+            isL3 = true;
+            isL1 = false;
+            isL2 = false;
+            isL4 = false;
+        } else {
+            isL4 = true;
+            isL1 = false;
+            isL2 = false;
+            isL3 = false;
+        }
+
     }
 
     public Command setTurnGoal(double degree) {

@@ -23,7 +23,7 @@ public class IngestCoral extends Command {
         }
         else {
             //go in speed
-            System.out.println("Down: " + placer.getSpeed());
+            // System.out.println("Down: " + placer.getSpeed());
             placer.movePlacer(.2);
         }
     }

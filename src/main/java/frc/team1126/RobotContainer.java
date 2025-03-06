@@ -11,6 +11,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team1126.Constants.ArmConstants;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
 import frc.team1126.commands.drive.DriveToClosestLeftBranchPoseCommand;
@@ -240,8 +243,9 @@ public class RobotContainer {
             m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
             m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
             m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
-            // m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));
+            // m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));  
             m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
+            // m_driver.leftBumper().whileTrue(m_swerve.driveToPose(new Pose2d(2.9154, 4.0316, new Rotation2d(0))));
             m_driver.rightBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestRightBranchPose()));
 
             //this is right joystick press
@@ -270,10 +274,10 @@ public class RobotContainer {
         m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01))
                    .alongWith(new IngestCoral(m_placer, -.5).andThen(new PositionCoral(m_placer))));                                                         //arm to coral station
 
-        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, 11.76196).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.013659))); //arm l1
-        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, 22.238).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))); //arm l2
-        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  26.5).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.25))); //arm l3
-        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, 33.5).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55))); //arm l4
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L1_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.013659))); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L2_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))); //arm l2
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  ArmConstants.L3_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.25))); //arm l3
+        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L4_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55))); //arm l4
 
         // m_operator.rightBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 5)); //move out
         // m_operator.leftBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 0)); // move home
@@ -320,6 +324,7 @@ public class RobotContainer {
         // autos using pathplanner
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
         m_chooser.addOption("3MeterTest", new PathPlannerAuto("3MeterTest"));
+        m_chooser.addOption("MoveForward", new PathPlannerAuto("MoveForwardAuto"));
 
     }
     

@@ -35,8 +35,7 @@ public class Robot extends TimedRobot {
         
         SmartDashboard.putNumber("Controller speed", RobotContainer.m_operator.getLeftY());
         SmartDashboard.putData("AUTO CHOICES ", RobotContainer.m_chooser);
-        // SmartDashboard.putNumber("Vision X Distance", RobotContainer.m_swerve.getPose().getX());
-        // SmartDashboard.putNumber("Vision Y Distance", RobotContainer.m_swerve.getPose().getY());
+        RobotContainer.ledSubsystem.setAllianceColorCommand();
     }
 
     @Override
