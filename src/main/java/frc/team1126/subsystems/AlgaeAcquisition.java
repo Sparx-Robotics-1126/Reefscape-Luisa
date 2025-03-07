@@ -32,7 +32,6 @@ public class AlgaeAcquisition extends SubsystemBase {
     private SparkMaxConfig rotationConfig;
 
     private SparkClosedLoopController rotationController;
-    // private PIDController pidController;
 
     private DigitalInput homeSensor;
     private DigitalInput algaeSensor;

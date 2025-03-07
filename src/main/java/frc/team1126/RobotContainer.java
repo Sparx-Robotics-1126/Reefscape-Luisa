@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.team1126.Constants.AprilTagPositions;
 import frc.team1126.Constants.ArmConstants;
 import frc.team1126.Constants.OperatorConstants;
 import frc.team1126.commands.drive.AbsoluteDriveAdv;
@@ -97,6 +98,7 @@ public class RobotContainer {
                                                             .withControllerRotationAxis(() -> m_driver.getRightX() * -1 )
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
+                                                            .scaleRotation(0.4)
                                                             .allianceRelativeControl(true);                                         
   /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
@@ -242,8 +244,8 @@ public class RobotContainer {
             m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
             m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
             // m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));  
-            m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
-            // m_driver.leftBumper().whileTrue(m_swerve.driveToPose(new Pose2d(2.9154, 4.0316, new Rotation2d(0))));
+            // m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
+            m_driver.leftBumper().whileTrue(m_swerve.driveToPose(AprilTagPositions.APRILTAGS_BLU[0]));
             m_driver.rightBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestRightBranchPose()));
 
             //this is right joystick press
@@ -322,6 +324,7 @@ public class RobotContainer {
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
         m_chooser.addOption("3MeterTest", new PathPlannerAuto("3MeterTest"));
         m_chooser.addOption("MoveForward", new PathPlannerAuto("MoveForwardAuto"));
+        m_chooser.addOption("Test", new PathPlannerAuto("TestCoral"));
 
     }
     

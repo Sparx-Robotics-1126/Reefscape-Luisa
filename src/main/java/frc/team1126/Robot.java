@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.team1126.commands.EndGameRumble;
+import frc.team1126.commands.subsystems.LED.TeamLights;
 
 public class Robot extends TimedRobot {
     private Command autonomousCommand;
@@ -18,6 +19,7 @@ public class Robot extends TimedRobot {
     public static RobotContainer m_robotContainer;
     public static int ledColor;
     private Timer disabledTimer;
+    private TeamLights teamLights;
 
     @Override
     public void robotInit() {

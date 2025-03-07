@@ -183,12 +183,9 @@ if (visionDriveTest)
       final boolean enableFeedforward = true;
       // Configure AutoBuilder last
       AutoBuilder.configure(
-          this::getPose,
-          // Robot pose supplier
-          this::resetOdometry,
-          // Method to reset odometry (will be called if your auto has a starting pose)
-          this::getRobotVelocity,
-          // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          this::getPose, // Robot pose supplier
+          this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+          this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
             if (enableFeedforward)
             {
@@ -205,7 +202,7 @@ if (visionDriveTest)
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(2, 0.0, 0.0),
+              new PIDConstants(5, 0.0, 0.0),
               // Translation PID constants
               new PIDConstants(5.0, 0.0, 0.0)
               // Rotation PID constants
@@ -351,12 +348,6 @@ public Pose2d getClosestLeftBranchPose() {
 
     Pose2d nearest = candidates.get(getClosestFace(current));
     System.out.println("Apriltag " + nearest);
-
-    nearest = alliance.isPresent() ? 
-      alliance.get() == DriverStation.Alliance.Blue ?
-        nearest : 
-        FlippingUtil.flipFieldPose(nearest)
-    : nearest;
 
     return nearest;
   }
