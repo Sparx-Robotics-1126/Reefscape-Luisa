@@ -10,7 +10,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -34,13 +33,12 @@ public class ArmSubsystem extends SubsystemBase {
         kLevel4;
     }
 
-    // private final MutAngle mutAngle = Rotations.mutable(0);
+
     private SparkMax turnMotor;
     private SparkMax turnFollower; // follows turnMotor
     private SparkClosedLoopController turnController;
 
     private DigitalInput homeSensor;
-
 
     private RelativeEncoder turnEncoder;
 
@@ -49,11 +47,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     protected ShuffleboardTab armTab;
 
-    private GenericEntry kTurnPEntry;
-    private GenericEntry kTurnIEntry;
-    private GenericEntry kTurnDEntry;
-
-    private double angle = 0;
     private double targetAngle;
 
     public boolean isL1;
@@ -98,17 +91,13 @@ public class ArmSubsystem extends SubsystemBase {
      * configure PID settings here.
      */
     private void configurePID() {
-        double kTurnP = kTurnPEntry.getDouble(0);
-        double kTurnI = kTurnIEntry.getDouble(0);
-        double kTurnD = kTurnDEntry.getDouble(0);
-
 
         var p=.03;
         turnConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(p)
-                .i(kTurnI)
-                .d(kTurnD)
+                .i(0)
+                .d(0)
                 .outputRange(-1, 1)
                 .velocityFF(1.0/5767);
                 // .minOutput(-.04).maxOutput(.06)
@@ -116,8 +105,8 @@ public class ArmSubsystem extends SubsystemBase {
                 turn2Config.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(p)
-                .i(kTurnI)
-                .d(kTurnD)
+                .i(0)
+                .d(0)
                 .outputRange(-1, 1)
                 .velocityFF(1.0/5767);
 
@@ -140,14 +129,7 @@ public class ArmSubsystem extends SubsystemBase {
     }
 
     private void initShuffleboard() {
-        
-        // armTab = Shuffleboard.getTab("ArmTab");
-        kTurnPEntry = armTab.add("Turn P", 0).getEntry();
-        kTurnIEntry = armTab.add("Turn I", 0).getEntry();
-        kTurnDEntry = armTab.add("Turn D", 0).getEntry();
-        angle = armTab.add("Angle", 0).getEntry().getDouble(0);
-        // armTab.add("Turn Command", setTurnGoal(angle));
-//   SmartDashboard.putData("Turn Command", new InstantCommand(() -> setTurnGoal(angle)));
+
     }
 
     public void moveArm(double speed) {

@@ -58,8 +58,7 @@ import swervelib.SwerveInputStream;
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
  * Instead, the structure of the robot (including subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer
-{
+public class RobotContainer {
 
     public static final ArmSubsystem m_arm = new ArmSubsystem();
     
@@ -81,7 +80,7 @@ public class RobotContainer
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
     
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem       m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  private final SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
 
   /**
@@ -180,15 +179,15 @@ public class RobotContainer
    */
   private void configureDriverBindings()
   {
-    Command driveFieldOrientedDirectAngle      = m_swerve.driveFieldOriented(driveDirectAngle);
+    //Command driveFieldOrientedDirectAngle      = m_swerve.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = m_swerve.driveFieldOriented(driveAngularVelocity);
-    Command driveRobotOrientedAngularVelocity  = m_swerve.driveFieldOriented(driveRobotOriented);
-    Command driveSetpointGen = m_swerve.driveWithSetpointGeneratorFieldRelative(
-        driveDirectAngle);
+    // Command driveRobotOrientedAngularVelocity  = m_swerve.driveFieldOriented(driveRobotOriented);
+    // Command driveSetpointGen = m_swerve.driveWithSetpointGeneratorFieldRelative(
+    //    driveDirectAngle);
     Command driveFieldOrientedDirectAngleKeyboard      = m_swerve.driveFieldOriented(driveDirectAngleKeyboard);
-    Command driveFieldOrientedAnglularVelocityKeyboard = m_swerve.driveFieldOriented(driveAngularVelocityKeyboard);
-    Command driveSetpointGenKeyboard = m_swerve.driveWithSetpointGeneratorFieldRelative(
-        driveDirectAngleKeyboard);
+    // Command driveFieldOrientedAnglularVelocityKeyboard = m_swerve.driveFieldOriented(driveAngularVelocityKeyboard);
+    // Command driveSetpointGenKeyboard = m_swerve.driveWithSetpointGeneratorFieldRelative(
+    //     driveDirectAngleKeyboard);
 
     if (RobotBase.isSimulation())
     {

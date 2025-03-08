@@ -17,7 +17,6 @@ import frc.robot.Constants.AlgaeConstants;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -44,8 +43,6 @@ public class AlgaeAcquisition extends SubsystemBase {
     private double kRotationkA = 0.0;
 
     protected ShuffleboardTab algaeTab;
-
-    private double angle;
 
     ElevatorFeedforward m_feedforward =
             new ElevatorFeedforward(

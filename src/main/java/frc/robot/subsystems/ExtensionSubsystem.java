@@ -11,7 +11,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -43,16 +42,10 @@ public class ExtensionSubsystem extends SubsystemBase {
 
     protected ShuffleboardTab armTab;
 
-    private GenericEntry kExtPEntry;
-    private GenericEntry kExtIEntry;
-    private GenericEntry kExtDEntry;
-
     private double kElevatorkS= 0.0;
     private double kElevatorkG = .762;
     private double kElevatorkV =.762 ;
     private double kElevatorkA = 0.0;
-
-    private double angle;
 
     private double targetExtension;
 
@@ -89,15 +82,12 @@ public class ExtensionSubsystem extends SubsystemBase {
      */
     private void configurePID() {
 
-        double kExtP = kExtPEntry.getDouble(0);
-        double kExtI = kExtIEntry.getDouble(0);
-        double kExtD = kExtDEntry.getDouble(0);
 
         extensionConfig.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .p(3.1)
-                .i(kExtI)
-                .d(kExtD)
+                .i(0)
+                .d(0)
                 .outputRange(-.25, .25)
                 .velocityFF(1.0/5767);
     }
@@ -115,11 +105,8 @@ public class ExtensionSubsystem extends SubsystemBase {
     }
 
     private void initShuffleboard(){
-        kExtPEntry = armTab.add("Ext P", 0).getEntry();
-        kExtIEntry = armTab.add("Ext I", 0).getEntry();
-        kExtDEntry = armTab.add("Ext D", 0).getEntry();
+        
 
-        // angle = armTab.add("Angle", 0).getEntry().getDouble(0);
     }
 
     /**
