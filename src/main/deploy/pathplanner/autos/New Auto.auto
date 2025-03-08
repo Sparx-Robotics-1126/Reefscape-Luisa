@@ -1,0 +1,63 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "New Path copy"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveArmToL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToL4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveArmToL4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpinPlacerOut"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
