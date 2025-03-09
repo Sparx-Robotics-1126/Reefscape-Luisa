@@ -14,7 +14,7 @@ public class PlaceCoral extends Command {
     
     @Override
     public void execute() {
-        placer.movePlacer(2);
+        placer.movePlacer(.5);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class AlgaeAcquisition extends SubsystemBase {
 
     //Creates a new AlgaeAcquisition.
     public AlgaeAcquisition() {
-        if (!RobotBase.isSimulation()){
+        // if (!RobotBase.isSimulation()){
 
          algaeWheels = new SparkMax(AlgaeConstants.ALGAE_WHEELS_ID, MotorType.kBrushless);
          algaeRotation = new SparkMax(AlgaeConstants.ALGAE_ROTATION_ID, MotorType.kBrushless);
@@ -73,7 +73,7 @@ public class AlgaeAcquisition extends SubsystemBase {
 
         configurePID();
         configureSparkMaxes();
-        }
+        // }
 
         }
 
@@ -123,14 +123,23 @@ public class AlgaeAcquisition extends SubsystemBase {
      * Returns the position of algae acq
      */
     public double getAngle() {
+        if (rotationEncoder == null) {
+            return 0;
+        }
         return rotationEncoder.getPosition();
     }
 
     public boolean isAlgaeHome(){
+        if (homeSensor == null ) {
+            return false;
+        }
         return !homeSensor.get();
     }
 
     public boolean hasAlgae(){
+        if (algaeSensor == null) {
+            return false;
+        }
         return !algaeSensor.get();
     }
 

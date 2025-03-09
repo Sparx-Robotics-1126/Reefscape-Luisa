@@ -15,6 +15,9 @@ public class TeamLights extends Command{
 
     @Override
     public void initialize() {
+        if (!DriverStation.getAlliance().isPresent()) {
+            return;
+        }
         if(DriverStation.getAlliance().get() == Alliance.Blue) {
             for(int i = 0; i < ledSubsystem.getLedBuffer().getLength(); i++)  {
                 ledSubsystem.setColor(i, 0, 0, 255);

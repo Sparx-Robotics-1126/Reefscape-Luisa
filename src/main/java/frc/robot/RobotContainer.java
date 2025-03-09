@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AprilTagPositions;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.subsystems.LED.ReefLights;
 import frc.robot.commands.subsystems.LED.TeamLights;
 import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToHome;
 import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
@@ -148,7 +149,7 @@ public class RobotContainer {
 
             configurePathPlanner();
 
-            colorCamera = new HttpCamera("Color Camera", "10.11.26.11");
+            colorCamera = new HttpCamera("Color Camera", "http://10.11.26.11");
 
         // human control for climb and algae
 
@@ -241,11 +242,12 @@ public class RobotContainer {
             m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
             m_driver.y().whileTrue(new ClimbMoveToPos(m_climb, 0));
             m_driver.x().whileTrue(new ClimbMoveToPos(m_climb, 125));
-            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -120));
+            m_driver.b().whileTrue(new ClimbMoveToPos(m_climb, -112.55));
             // m_driver.leftBumper().whileTrue(new DriveToClosestLeftBranchPoseCommand(m_swerve));  
             // m_driver.leftBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestLeftBranchPose()));
             m_driver.leftBumper().whileTrue(m_swerve.driveToPose(AprilTagPositions.APRILTAGS_BLU[0]));
             m_driver.rightBumper().whileTrue(m_swerve.driveToPose(m_swerve.getClosestRightBranchPose()));
+
 
       // m_driver.a().onTrue((Commands.runOnce(m_swerve::zeroGyro)));
       // m_driver.x().onTrue(Commands.runOnce(m_swerve::addFakeVisionReading));
@@ -262,35 +264,27 @@ public class RobotContainer {
 
       public void configureOperatorBindings() {   
 
-       // WE NEED TO MAKE L3 HIGHER THAN 24.45223045349121 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
+        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 18.442849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01)).alongWith(new IngestCoral(m_placer, -.5).andThen(new PositionCoral(m_placer))));                                                    //arm to coral station
 
-        m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, -.01).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
-        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 17.642849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01))
-                   .alongWith(new IngestCoral(m_placer, -.5).andThen(new PositionCoral(m_placer))));                                                         //arm to coral station
-
-        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L1_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.013659))); //arm l1
-        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L2_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989))); //arm l2
-        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  ArmConstants.L3_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.25))); //arm l3
-        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L4_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55))); //arm l4
-
-        // m_operator.rightBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 5)); //move out
-        // m_operator.leftBumper().whileTrue(new AlgaeMoveToPosition(m_algae, 0)); // move home
+        m_operator.a().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L1_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.013659)).alongWith(new ReefLights(ledSubsystem, true, 1))); //arm l1
+        m_operator.x().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L2_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989)).alongWith(new ReefLights(ledSubsystem, true, 2))); //arm l2
+        m_operator.b().whileTrue(new MoveArmToAngle(m_arm,  ArmConstants.L3_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.25)).alongWith(new ReefLights(ledSubsystem, true, 3))); //arm l3
+        m_operator.y().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L4_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, -0.55)).alongWith(new ReefLights(ledSubsystem, true, 4))); //arm l4
 
         m_operator.rightTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kRightTrigger.value), m_placer,false));
         m_operator.leftTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kLeftTrigger.value), m_placer,true));
         m_operator.povRight().whileTrue(new AlgaeMoveToPosition(m_algae, 40));
         m_operator.leftBumper().whileTrue(new AlgaeMoveToHome(m_algae));
         m_operator.rightBumper().whileTrue(new SpitAlgae(m_algae));
-
     }
 
       public void configureChooser() {
         // autos using pathplanner
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
-        m_chooser.addOption("3MeterTest", new PathPlannerAuto("3MeterTest"));
-        m_chooser.addOption("MoveForward", new PathPlannerAuto("MoveForwardAuto"));
-        m_chooser.addOption("Test", new PathPlannerAuto("TestCoral"));
-
+        m_chooser.addOption("3 CORAL AUTO", new PathPlannerAuto("3CoralAuto"));
+        m_chooser.addOption("test", new PathPlannerAuto("Startpos1 l4 coral"));
+        m_chooser.addOption("dump L1", new PathPlannerAuto("DumpL1"));
     }
 
    /* REGISTER PATHPLANNER COMMANDS HERE */
@@ -319,7 +313,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));
 
         NamedCommands.registerCommand("IngestCoral", new IngestCoral(m_placer,-.15));
-   }
+        NamedCommands.registerCommand("PositionCoral", new PositionCoral(m_placer));
+
+        // NamedCommands.registerCommand("MovetoPos", new InstantCommand(() -> m_swerve.moveToPosition) );  
+         }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -329,8 +326,8 @@ public class RobotContainer {
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return m_swerve.getAutonomousCommand("New Auto");
-    //return m_chooser.getSelected();
+    //return m_swerve.getAutonomousCommand("New Auto");
+    return m_chooser.getSelected();
   }
 
   public void setMotorBrake(boolean brake)

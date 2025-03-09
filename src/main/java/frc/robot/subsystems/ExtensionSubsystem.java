@@ -58,7 +58,7 @@ public class ExtensionSubsystem extends SubsystemBase {
                     kElevatorkA);
 
     public ExtensionSubsystem() {
-  if (!RobotBase.isSimulation()){
+//   if (!RobotBase.isSimulation()){
 
         extension = new SparkMax(ArmConstants.ELEVATOR_ID, MotorType.kBrushless);
         extensionController = extension.getClosedLoopController();
@@ -73,7 +73,7 @@ public class ExtensionSubsystem extends SubsystemBase {
         initShuffleboard();
         configurePID();
         configureSparkMaxes();
-  }
+//   }
 
     }
 
@@ -122,6 +122,9 @@ public class ExtensionSubsystem extends SubsystemBase {
      * Returns the current position of the extension 
      */
     public double getExtension() {
+        if (extensionEncoder == null) {
+            return 0;
+        }
         return extensionEncoder.getPosition();
     }
 

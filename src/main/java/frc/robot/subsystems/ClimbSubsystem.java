@@ -28,7 +28,7 @@ public class ClimbSubsystem extends SubsystemBase {
     protected ShuffleboardTab climbTab;
 
     public ClimbSubsystem() {
-        if (!RobotBase.isSimulation()){
+        // if (!RobotBase.isSimulation()){
 
             climb = new SparkMax(ClimbConstants.CLIMB_ID, MotorType.kBrushless);
             climbEncoder = climb.getEncoder();
@@ -39,7 +39,7 @@ public class ClimbSubsystem extends SubsystemBase {
             initShuffleboard();
             configurePID();
             configureSparkMaxes();
-        }
+        // }
     }
 
     /*

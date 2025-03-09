@@ -15,7 +15,7 @@ public class AcquireCoral extends Command {
 
     @Override
     public void execute() {
-        placer.movePlacer(-1);
+        placer.movePlacer(-.5);
     }
 
     @Override
@@ -26,6 +26,7 @@ public class AcquireCoral extends Command {
     @Override
     public void end(boolean interruped){
         placer.movePlacer(0);
+        
     }
     
 }

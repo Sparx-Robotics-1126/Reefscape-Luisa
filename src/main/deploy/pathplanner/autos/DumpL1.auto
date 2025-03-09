@@ -11,19 +11,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "New Path copy"
+                  "pathName": "DumpL1 (1)"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveArmToL4"
+                  "name": "MoveArmToL1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveExtensionToL4"
+                  "name": "MoveExtensionToL1"
                 }
               }
             ]
@@ -36,22 +36,28 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveExtensionToL4"
+                  "name": "MoveArmToL1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "MoveArmToL4"
+                  "name": "MoveExtensionToL1"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "SpinPlacerOut"
+                  "name": "SpinPlacerIn"
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DumpL1 (2)"
           }
         }
       ]

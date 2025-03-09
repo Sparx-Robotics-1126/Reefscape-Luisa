@@ -64,7 +64,7 @@ public class ArmSubsystem extends SubsystemBase {
 //     ElevatorFeedforward elevatorFeedforward = new ElevatorFeedforward(0.1, 0.1);
 
     public ArmSubsystem() {
-          if (!RobotBase.isSimulation()){
+        //   if (!RobotBase.isSimulation()){
 
         turnMotor = new SparkMax(ArmConstants.TURN_ONE_ID, MotorType.kBrushless);
         turnFollower = new SparkMax(ArmConstants.TURN_TWO_ID, MotorType.kBrushless);
@@ -84,7 +84,7 @@ public class ArmSubsystem extends SubsystemBase {
         configurePID();
         configureSparkMaxes();
 
-          }
+        //   }
     }
 
     /*
@@ -141,6 +141,9 @@ public class ArmSubsystem extends SubsystemBase {
      * Returns the position of the arm
      */
     public double getArmAngle() {
+        if (turnEncoder == null) {
+            return 0;
+        }
         return turnEncoder.getPosition();
     }
 
