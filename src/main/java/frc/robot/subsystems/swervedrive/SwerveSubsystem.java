@@ -18,6 +18,7 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.FlippingUtil;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import frc.lib.util.Tunable;
 import frc.robot.Constants;
 import frc.robot.Constants.AlignmentConstants;
 import frc.robot.Constants.AprilTagPositions;
@@ -53,12 +55,14 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
+import swervelib.SwerveModule;
 import swervelib.math.SwerveMath;
 import swervelib.parser.SwerveControllerConfiguration;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import swervelib.parser.PIDFConfig;
 
 public class SwerveSubsystem extends SubsystemBase
 {
@@ -75,6 +79,24 @@ public class SwerveSubsystem extends SubsystemBase
    * PhotonVision class to keep an accurate odometry.
    */
   private Vision vision;
+  // {
+  //   "drive": {
+  //     "p": 0.002,
+  //     "i": 0.0,
+  //     "d": 0.9,
+  //     "f": 0,
+  //     "iz": 0
+  //   },
+  //   "angle": {
+  //     "p": 0.004,
+  //     "i": 0,
+  //     "d": 2.25,
+  //     "f": 0,
+  //     "iz": 0
+  //   }
+  // }
+  private PIDFConfig driveConfig = new PIDFConfig(0.002, 0.0, 0.9, 0.0);
+  private PIDFConfig angleConfig = new PIDFConfig(0.004, 0.0, 2.25, 0.0);
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -92,9 +114,13 @@ public class SwerveSubsystem extends SubsystemBase
                                                     Rotation2d.fromDegrees(180));
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+
+
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
+      
+      initializeTunable();
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
     } catch (Exception e)
@@ -127,6 +153,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg)
   {
+
+
     swerveDrive = new SwerveDrive(driveCfg,
                                   controllerCfg,
                                   Constants.MAX_SPEED,
@@ -142,9 +170,67 @@ public class SwerveSubsystem extends SubsystemBase
     vision = new Vision(swerveDrive::getPose, swerveDrive.field);
   }
 
+
+private void initializeTunable(){
+  var name = "swerve/api";
+   // setMovePID()
+        Tunable.doubleValue(name + "/movePID/kP",driveConfig.p , v -> {
+          driveConfig.p = v;
+            reapplyGains(true);
+        });
+        Tunable.doubleValue(name + "/movePID/kI",driveConfig.i, v -> {
+          driveConfig.i = v;
+          reapplyGains(true);
+        });
+        Tunable.doubleValue(name + "/movePID/kD", driveConfig.d, v -> {
+          driveConfig.d = v;
+          reapplyGains(true);
+        });
+
+        // setMoveFF()
+        Tunable.doubleValue(name + "/moveFF/kf",driveConfig.f, v -> {
+          driveConfig.f = v;
+          reapplyGains(true);
+        });
+        // Tunable.doubleValue(name + "/moveFF/kV", config.moveFF[1], v -> {
+        //     config.moveFF[1] = v;
+        //     reapplyGains(true, api);
+        // });
+
+        // setTurnPID()
+        Tunable.doubleValue(name + "/turnPID/kP", angleConfig.p, v -> {
+            angleConfig.p = v;
+            reapplyGains(false);
+        });
+        Tunable.doubleValue(name + "/turnPID/kI",angleConfig.i, v -> {
+          angleConfig.i = v;
+          reapplyGains(false);
+        });
+        Tunable.doubleValue(name + "/turnPID/kD", angleConfig.d, v -> {
+          angleConfig.d = v;
+          reapplyGains(false);
+        });
+
+}
+
+private void reapplyGains(boolean driveMotors){
+  if(driveMotors){
+    for (SwerveModule iterable_element : swerveDrive.getModules()) {
+      iterable_element.setDrivePIDF(driveConfig);
+    }
+  } else {
+    for (SwerveModule iterable_element : swerveDrive.getModules()) {
+      iterable_element.setAnglePIDF(angleConfig);
+    }
+  }
+}
+
+
   @Override
   public void periodic()
   {
+    Tunable.update();
+
     // When vision is enabled we must manually update odometry in SwerveDrive
     if (visionDriveTest)
     {
