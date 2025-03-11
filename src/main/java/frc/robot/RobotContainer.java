@@ -156,7 +156,7 @@ public class RobotContainer {
         // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
          //m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-        m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
+        //m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
 
         ledSubsystem.setDefaultCommand(new TeamLights(ledSubsystem));
 
