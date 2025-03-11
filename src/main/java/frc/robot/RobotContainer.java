@@ -52,7 +52,7 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.PlacerSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.io.File;
-import swervelib.SwerveInputStream;
+import frc.lib.swervelib.SwerveInputStream;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very

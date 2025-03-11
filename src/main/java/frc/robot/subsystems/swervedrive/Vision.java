@@ -38,8 +38,8 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-import swervelib.SwerveDrive;
-import swervelib.telemetry.SwerveDriveTelemetry;
+import frc.lib.swervelib.SwerveDrive;
+import frc.lib.swervelib.telemetry.SwerveDriveTelemetry;
 
 
 /**
