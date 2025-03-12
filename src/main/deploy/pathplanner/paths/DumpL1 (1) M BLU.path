@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.9118150684931505,
-        "y": 1.0574272260273971
+        "x": 10.0,
+        "y": 4.077589897260274
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.428277858651496,
-        "y": 1.0752079778012034
+        "x": 11.03589634862101,
+        "y": 4.072168679550591
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.996832191780822,
-        "y": 1.0574272260273971
+        "x": 11.675,
+        "y": 4.078
       },
       "prevControl": {
-        "x": 5.202759636842073,
-        "y": 1.042262720180139
+        "x": 10.691073360893364,
+        "y": 4.06813767185351
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "TestPaths",
+  "folder": "DumpL1 M BLU",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.73889616888604
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

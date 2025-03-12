@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -282,12 +283,19 @@ public class RobotContainer {
       public void configureChooser() {
         // autos using pathplanner
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
-        m_chooser.addOption("3 CORAL AUTO", new PathPlannerAuto("3CoralAuto"));
-        m_chooser.addOption("Test", new PathPlannerAuto("Startpos1 l4 coral"));
-        m_chooser.addOption("Dump L1 R", new PathPlannerAuto("DumpL1 R"));
-        m_chooser.addOption("Dump L1 M", new PathPlannerAuto("DumpL1 M"));
-        m_chooser.addOption("Dump L1 L", new PathPlannerAuto("DumpL1 L"));
-        m_chooser.addOption("Test", new PathPlannerAuto("BlueSideTest"));
+        // m_chooser.addOption("3 CORAL AUTO", new PathPlannerAuto("3CoralAuto"));
+        // m_chooser.addOption("Test", new PathPlannerAuto("Startpos1 l4 coral"));
+
+
+        // m_chooser.addOption("Test", new PathPlannerAuto("BlueSideTest"));
+
+          m_chooser.addOption("Dump L1 R BLUE", new PathPlannerAuto("DumpL1 R BLU"));
+          m_chooser.addOption("Dump L1 M BLUE", new PathPlannerAuto("DumpL1 M BLU"));
+          m_chooser.addOption("Dump L1 L BLUE", new PathPlannerAuto("DumpL1 L BLU"));
+
+          m_chooser.addOption("Dump L1 L RED", new PathPlannerAuto("DumpL1 L RED"));
+          m_chooser.addOption("Dump L1 R RED", new PathPlannerAuto("DumpL1 R RED"));
+          m_chooser.addOption("Dump L1 M RED", new PathPlannerAuto("DumpL1 M RED"));
     }
 
    /* REGISTER PATHPLANNER COMMANDS HERE */

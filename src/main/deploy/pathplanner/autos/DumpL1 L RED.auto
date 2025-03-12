@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DumpL1 (1) M"
+                  "pathName": "DumpL1 (1) L RED"
                 }
               },
               {
@@ -36,6 +36,12 @@
               {
                 "type": "named",
                 "data": {
+                  "name": "SpinPlacerOut"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
                   "name": "MoveArmToL1"
                 }
               },
@@ -43,12 +49,6 @@
                 "type": "named",
                 "data": {
                   "name": "MoveExtensionToL1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "SpinPlacerIn"
                 }
               }
             ]
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DumpL1 (2) M"
+                  "pathName": "DumpL1 (2) L RED"
                 }
               },
               {
@@ -83,6 +83,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "DumpL1",
+  "folder": "DumpL1 RED",
   "choreoAuto": false
 }
