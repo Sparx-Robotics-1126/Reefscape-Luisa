@@ -81,7 +81,7 @@ public class RobotContainer {
     final static SendableChooser<Command> m_chooser = new SendableChooser<>();
     
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  final static SwerveSubsystem m_swerve  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/neo"));
 
   /**
@@ -156,7 +156,7 @@ public class RobotContainer {
         // m_climb.setDefaultCommand(new ClimbMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftX.value), m_climb));
         m_arm.setDefaultCommand(new ControllerMoveArm(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_arm));
          //m_extension.setDefaultCommand(new ControllerMoveExtension(()-> m_operator.getRawAxis(XboxController.Axis.kRightY.value), m_extension));
-        //m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
+        m_extension.setDefaultCommand(new MoveExtHome(m_extension, .05));
 
         ledSubsystem.setDefaultCommand(new TeamLights(ledSubsystem));
 
@@ -283,8 +283,11 @@ public class RobotContainer {
         // autos using pathplanner
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
         m_chooser.addOption("3 CORAL AUTO", new PathPlannerAuto("3CoralAuto"));
-        m_chooser.addOption("test", new PathPlannerAuto("Startpos1 l4 coral"));
-        m_chooser.addOption("dump L1", new PathPlannerAuto("DumpL1"));
+        m_chooser.addOption("Test", new PathPlannerAuto("Startpos1 l4 coral"));
+        m_chooser.addOption("Dump L1 R", new PathPlannerAuto("DumpL1 R"));
+        m_chooser.addOption("Dump L1 M", new PathPlannerAuto("DumpL1 M"));
+        m_chooser.addOption("Dump L1 L", new PathPlannerAuto("DumpL1 L"));
+        m_chooser.addOption("Test", new PathPlannerAuto("BlueSideTest"));
     }
 
    /* REGISTER PATHPLANNER COMMANDS HERE */
@@ -308,6 +311,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("MoveExtensionToL2", new MoveExtensionToPos(m_extension, m_arm,-0.0831989).withTimeout(1));
         NamedCommands.registerCommand("MoveExtensionToL3", new MoveExtensionToPos(m_extension, m_arm,-0.25).withTimeout(1));
         NamedCommands.registerCommand("MoveExtensionToL4", new MoveExtensionToPos(m_extension, m_arm, -0.55).withTimeout(2));
+
 
         NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer).withTimeout(1));
         NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));

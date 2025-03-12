@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DumpL1 (1)"
+                  "pathName": "DumpL1 (1) M"
                 }
               },
               {
@@ -55,15 +55,34 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "DumpL1 (2)"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DumpL1 (2) M"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveArmToHome"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "MoveExtensionToHome"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "DumpL1",
   "choreoAuto": false
 }

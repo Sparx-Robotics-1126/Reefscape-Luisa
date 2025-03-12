@@ -55,6 +55,7 @@ public class Robot extends TimedRobot
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop
     // immediately when disabled, but then also let it be pushed more 
     disabledTimer = new Timer();
+    RobotContainer.m_swerve.zeroGyro();
 
     FollowPathCommand.warmupCommand().schedule();
 
@@ -112,6 +113,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    RobotContainer.m_swerve.zeroGyroWithAlliance();
     rainbow.initialize();
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -129,6 +131,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousPeriodic()
   {
+    
   }
 
   @Override

@@ -96,8 +96,8 @@ public class SwerveSubsystem extends SubsystemBase
   //     "iz": 0
   //   }
   // }
-  private PIDFConfig driveConfig = new PIDFConfig(0.002, 0.0, 0.9, 0.0);
-  private PIDFConfig angleConfig = new PIDFConfig(0.004, 0.0, 2.25, 0.0);
+  private PIDFConfig driveConfig = new PIDFConfig(0.008, 0.0, 0.00005, 0.0035);
+  private PIDFConfig angleConfig = new PIDFConfig(0.004, 0.0, 0.0, 0.0);
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -109,17 +109,17 @@ public class SwerveSubsystem extends SubsystemBase
     boolean blueAlliance = false;
     Pose2d startingPose = blueAlliance ? new Pose2d(new Translation2d(Meter.of(1),
                                                                       Meter.of(4)),
-                                                    Rotation2d.fromDegrees(0))
+                                                    Rotation2d.fromDegrees(180))
                                        : new Pose2d(new Translation2d(Meter.of(16),
                                                                       Meter.of(4)),
-                                                    Rotation2d.fromDegrees(180));
+                                                    Rotation2d.fromDegrees(0));
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
 
 
     try
     {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED);
       initializeTunable();
       // Alternative method if you don't want to supply the conversion factor via JSON files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
