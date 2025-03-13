@@ -3,19 +3,24 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "TEST CorrectBluSIde",
     "DumpL1 L BLU",
     "DumpL1 L RED",
     "DumpL1 M BLU",
     "DumpL1 M RED",
     "DumpL1 R BLU",
     "DumpL1 R RED",
+    "ScoreL4 M BLU",
+    "ScoreL4 M RED",
     "TEST BadCoral",
+    "TEST CorrectBluSIde",
     "TestPaths"
   ],
   "autoFolders": [
     "DumpL1 BLU",
-    "DumpL1 RED"
+    "DumpL1 RED",
+    "MoveForward",
+    "Score L4 BLU",
+    "Score L4 RED"
   ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 1.5,

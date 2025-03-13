@@ -296,7 +296,14 @@ public class RobotContainer {
           m_chooser.addOption("Dump L1 L RED", new PathPlannerAuto("DumpL1 L RED"));
           m_chooser.addOption("Dump L1 R RED", new PathPlannerAuto("DumpL1 R RED"));
           m_chooser.addOption("Dump L1 M RED", new PathPlannerAuto("DumpL1 M RED"));
-    }
+
+          m_chooser.addOption("Coral L4 M RED", new PathPlannerAuto("Score L4 M"));
+          m_chooser.addOption("Coral L4 M BLU", new PathPlannerAuto("Score L4 M BLU"));
+
+        m_chooser.addOption("MoveForward RED",new PathPlannerAuto("MoveForward RED"));
+        m_chooser.addOption("MoveForward BLUE",new PathPlannerAuto("MoveForward BLU"));
+
+      }
 
    /* REGISTER PATHPLANNER COMMANDS HERE */
     public void configurePathPlanner() {
