@@ -33,7 +33,6 @@ import frc.robot.commands.subsystems.LED.ReefLights;
 import frc.robot.commands.subsystems.LED.TeamLights;
 import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToHome;
 import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
-import frc.robot.commands.subsystems.algaeAcq.MoveAlgae;
 import frc.robot.commands.subsystems.algaeAcq.SpitAlgae;
 import frc.robot.commands.subsystems.arm.ControllerMoveArm;
 import frc.robot.commands.subsystems.arm.MoveArmToAngle;
@@ -66,7 +65,7 @@ public class RobotContainer {
     
     public static final ExtensionSubsystem m_extension = new ExtensionSubsystem();
     
-    public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
+    // public static final AlgaeAcquisition m_algae = new AlgaeAcquisition();
 
     public static final ClimbSubsystem m_climb = new ClimbSubsystem();
 
@@ -163,7 +162,7 @@ public class RobotContainer {
 
         // m_placer.setDefaultCommand(new AnalogPlacer(()-> m_operator.getRawAxis(XboxController.Axis.kLeftY.value), m_placer));
 
-        m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
+        // m_algae.setDefaultCommand(new MoveAlgae(m_algae, () -> m_operator.getRawAxis(XboxController.Axis.kRightY.value)));
        
         configureChooser();
 
@@ -275,9 +274,9 @@ public class RobotContainer {
 
         m_operator.rightTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kRightTrigger.value), m_placer,false));
         m_operator.leftTrigger(0.1).whileTrue(new AnalogPlacer(() -> m_operator.getRawAxis(XboxController.Axis.kLeftTrigger.value), m_placer,true));
-        m_operator.povRight().whileTrue(new AlgaeMoveToPosition(m_algae, 40));
-        m_operator.leftBumper().whileTrue(new AlgaeMoveToHome(m_algae));
-        m_operator.rightBumper().whileTrue(new SpitAlgae(m_algae));
+        // m_operator.povRight().whileTrue(new AlgaeMoveToPosition(m_algae, 40));
+        // m_operator.leftBumper().whileTrue(new AlgaeMoveToHome(m_algae));
+        // m_operator.rightBumper().whileTrue(new SpitAlgae(m_algae));
     }
 
       public void configureChooser() {
@@ -328,7 +327,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("MoveExtensionToL4", new MoveExtensionToPos(m_extension, m_arm, -0.55).withTimeout(2));
 
 
-        NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer).withTimeout(1));
+        NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer, 0.5).withTimeout(1));
         NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));
 
         NamedCommands.registerCommand("IngestCoral", new IngestCoral(m_placer,-.15));
@@ -346,6 +345,7 @@ public class RobotContainer {
   {
     // An example command will be run in autonomous
     //return m_swerve.getAutonomousCommand("New Auto");
+
     return m_chooser.getSelected();
   }
 

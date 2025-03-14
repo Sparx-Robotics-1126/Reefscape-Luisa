@@ -6,15 +6,17 @@ import frc.robot.subsystems.PlacerSubsystem;
 public class PlaceCoral extends Command {
     
     private PlacerSubsystem placer;
+    private double speed;
     
-    public PlaceCoral(PlacerSubsystem placer) {
+    public PlaceCoral(PlacerSubsystem placer, double speed) {
         addRequirements(placer);
         this.placer = placer;
+        this.speed = speed;
     }
     
     @Override
     public void execute() {
-        placer.movePlacer(.5);
+        placer.movePlacer(speed);
     }
 
     @Override

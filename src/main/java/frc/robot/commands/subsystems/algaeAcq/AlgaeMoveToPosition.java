@@ -17,7 +17,7 @@ public class AlgaeMoveToPosition extends Command {
     @Override
     public void execute() {
         algaeAcquisition.reachGoal(targetAngle);
-        algaeAcquisition.spinAlgaeWheels(4);
+        algaeAcquisition.spinAlgaeWheels(.3);
     }
 
     @Override
