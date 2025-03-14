@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.9779716197738,
-        "y": 3.9896997041001017
+        "x": 6.5754324339025105,
+        "y": 4.425954629133456
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.956496710526316,
+        "x": 6.562006578947368,
         "y": 4.078
       },
       "prevControl": {
-        "x": 6.480307111068083,
-        "y": 4.00656652590815
+        "x": 6.348388062002499,
+        "y": 3.9481264876186266
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.2511001434649728
+    "rotation": 23.682475927251424
   },
   "reversed": false,
   "folder": "DumpL1 M RED",
