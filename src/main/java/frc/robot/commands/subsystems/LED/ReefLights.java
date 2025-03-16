@@ -33,10 +33,10 @@ public class ReefLights extends Command {
             } else if (color == 3){
                 ledSubsystem.setPulse(new Color8Bit(0, 255, 240), 1, 0, ledSubsystem.getLedBuffer().getLength());
                 System.out.println("@ l3");
-            } else {
+            } else if (color == 4){
                 ledSubsystem.setPulse(new Color8Bit(148, 0, 255), 1, 0, ledSubsystem.getLedBuffer().getLength());
                 System.out.println("@ l4");
-            }
+            } 
         } 
         // else {
         //     if(color == 1){

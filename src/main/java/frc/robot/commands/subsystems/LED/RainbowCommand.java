@@ -5,10 +5,13 @@ import frc.robot.subsystems.LEDs;
 
 public class RainbowCommand extends Command {
     private final LEDs ledSubsystem;
+    private final TeamLights lights;
 
     public RainbowCommand(LEDs ledSubsystem) {
         this.ledSubsystem = ledSubsystem;
         addRequirements(ledSubsystem);
+        lights = new TeamLights(ledSubsystem);
+        
     }
 
     @Override
@@ -19,5 +22,10 @@ public class RainbowCommand extends Command {
     @Override
     public boolean isFinished() {
         return false; // Run until interrupted
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        lights.initialize();
     }
 }

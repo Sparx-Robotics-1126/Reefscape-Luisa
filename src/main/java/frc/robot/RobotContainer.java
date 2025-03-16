@@ -29,11 +29,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.AprilTagPositions;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.subsystems.LED.RainbowCommand;
 import frc.robot.commands.subsystems.LED.ReefLights;
 import frc.robot.commands.subsystems.LED.TeamLights;
-import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToHome;
-import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
-import frc.robot.commands.subsystems.algaeAcq.SpitAlgae;
+// import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToHome;
+// import frc.robot.commands.subsystems.algaeAcq.AlgaeMoveToPosition;
+// import frc.robot.commands.subsystems.algaeAcq.SpitAlgae;
 import frc.robot.commands.subsystems.arm.ControllerMoveArm;
 import frc.robot.commands.subsystems.arm.MoveArmToAngle;
 import frc.robot.commands.subsystems.arm.MoveExtHome;
@@ -44,7 +45,7 @@ import frc.robot.commands.subsystems.placer.AnalogPlacer;
 import frc.robot.commands.subsystems.placer.IngestCoral;
 import frc.robot.commands.subsystems.placer.PlaceCoral;
 import frc.robot.commands.subsystems.placer.PositionCoral;
-import frc.robot.subsystems.AlgaeAcquisition;
+// import frc.robot.subsystems.AlgaeAcquisition;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ExtensionSubsystem;
@@ -265,7 +266,8 @@ public class RobotContainer {
       public void configureOperatorBindings() {   
 
         m_operator.povDown().whileTrue(new MoveArmToAngle(m_arm, 0).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.01))); //arm home
-        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 18.442849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01)).alongWith(new IngestCoral(m_placer, -.5).andThen(new PositionCoral(m_placer))));                                                    //arm to coral station
+        m_operator.povUp().whileTrue(new MoveArmToAngle(m_arm, 18.442849922180176).alongWith(new MoveExtensionToPos(m_extension, m_arm, .01))
+                  .alongWith(new IngestCoral(m_placer, -.5)).andThen(new PositionCoral(m_placer)));                                                    //arm to coral station
 
         m_operator.a().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L1_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm, 0.013659)).alongWith(new ReefLights(ledSubsystem, true, 1))); //arm l1
         m_operator.x().whileTrue(new MoveArmToAngle(m_arm, ArmConstants.L2_ARM_POS).alongWith(new MoveExtensionToPos(m_extension, m_arm,-0.0831989)).alongWith(new ReefLights(ledSubsystem, true, 2))); //arm l2
@@ -284,9 +286,6 @@ public class RobotContainer {
         m_chooser.setDefaultOption("Do Nothing", new WaitCommand(15));
         // m_chooser.addOption("3 CORAL AUTO", new PathPlannerAuto("3CoralAuto"));
         // m_chooser.addOption("Test", new PathPlannerAuto("Startpos1 l4 coral"));
-
-
-        // m_chooser.addOption("Test", new PathPlannerAuto("BlueSideTest"));
 
           m_chooser.addOption("Dump L1 R BLUE", new PathPlannerAuto("DumpL1 R BLU"));
           m_chooser.addOption("Dump L1 M BLUE", new PathPlannerAuto("DumpL1 M BLU"));
@@ -328,6 +327,7 @@ public class RobotContainer {
 
 
         NamedCommands.registerCommand("SpinPlacerOut", new PlaceCoral(m_placer, 0.5).withTimeout(1));
+        NamedCommands.registerCommand("SlowPlacer", new PlaceCoral(m_placer, 0.3).withTimeout(1));
         NamedCommands.registerCommand("SpinPlacerIn",new AcquireCoral(m_placer).withTimeout(1));
 
         NamedCommands.registerCommand("IngestCoral", new IngestCoral(m_placer,-.15));
